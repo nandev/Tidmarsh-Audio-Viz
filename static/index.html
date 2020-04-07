@@ -1,76 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-<script>
-function init() {
-	// for legacy browsers
-	const AudioContext = window.AudioContext || window.webkitAudioContext;
-
-	const audioContext = new AudioContext();
-	
-
-	// get the audio element
-	const audioElement = document.querySelector('audio');
-	audioElement.crossorigin = 'anonymous'
-
-	// pass it into the audio context
-	const track = audioContext.createMediaElementSource(audioElement);
-
-	track.connect(audioContext.destination);
-
-	// select our play button
-	const playButton = document.querySelector('button');
-
-	// add gain node
-	const gainNode = audioContext.createGain();
-
-	// volume control slider
-	const volumeControl = document.querySelector('#volume');
-
-	const pannerOptions = { pan: 0 };
-	const panner = new StereoPannerNode(audioContext, pannerOptions);
-
-	const pannerControl = document.querySelector('#panner');
-	track.connect(gainNode).connect(panner).connect(audioContext.destination);
-
-	var noiseSuppression = MediaTrackSettings.noiseSuppression;
-
-	track.connect(gainNode).connect(noiseSuppression).connect(audioContext.destination);
-
-	pannerControl.addEventListener('input', function() {
-	  panner.pan.value = this.value;
-	}, false);
-
-	volumeControl.addEventListener('input', function() {
-	  gainNode.gain.value = this.value;
-	}, false);
-
-	
-
-	playButton.addEventListener('click', function() {
-
-		// check if context is in suspended state (autoplay policy)
-		if (audioContext.state === 'suspended') {
-			audioContext.resume();
+	<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
+	<script src="/static/drawing.js"></script>
+	<script src="/static/audio.js"></script>
+	<script>
+		function init() {
+			initAudio();
 		}
-
-		// play or pause track depending on state
-		if (this.dataset.playing === 'false') {
-			audioElement.play();
-			this.dataset.playing = 'true';
-		} else if (this.dataset.playing === 'true') {
-			audioElement.pause();
-			this.dataset.playing = 'false';
-		}
-
-	}, false);
-
-	audioElement.addEventListener('ended', () => {
-		playButton.dataset.playing = 'false';
-	}, false);
-
-}
-</script>
+	</script>
+	<link rel="shortcut icon" href="/static/favicon.ico">
 </head>
 <body onload="init()">
 
@@ -82,7 +21,7 @@ function init() {
 
 <input type="range" id="volume" min="0" max="2" value="1" step="0.01">
 
-<input type="range" id="panner" min="-1" max="1" value="0" step="0.01">
+<button class="button-filter" role="switch" data-filteron="false" aria-pressed="false" aria-describedby="label" disabled><span id="label" aria-live="assertive" aria-atomic="true" >Filter Off</span></button>
 
 </body>
 </html>
