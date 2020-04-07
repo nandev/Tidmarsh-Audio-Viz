@@ -4,6 +4,9 @@ function initAudio(){
 	const AudioContext = window.AudioContext || window.webkitAudioContext;
 	const audioContext = new AudioContext();
 	
+	// analyzer
+	//var analyser = AudioContext.createAnalyser();
+	
 	// get the audio element
 	const audioElement = document.querySelector('audio');
 	audioElement.crossorigin = 'anonymous'
