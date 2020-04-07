@@ -1,3 +1,6 @@
+var analyser;
+var dataArray;
+
 function initAudio(){
 	
 	// create audio context (for legacy browsers)
@@ -5,7 +8,10 @@ function initAudio(){
 	const audioContext = new AudioContext();
 	
 	// analyzer
-	//var analyser = AudioContext.createAnalyser();
+	analyser = audioContext.createAnalyser();
+	analyser.fftSize = 32;
+	var bufferLength = analyser.frequencyBinCount;
+	dataArray = new Uint8Array(bufferLength);
 	
 	// get the audio element
 	const audioElement = document.querySelector('audio');
@@ -95,7 +101,7 @@ function initAudio(){
 	noisegraph2.connect(merger, 0, 1)
 	noisegraph.connect(merger, 0, 0)
 	noisegraph.connect(merger, 0, 1)
-	track.connect(splitter)
+	track.connect(analyser).connect(splitter)
 	splitter.connect(merger, 1, 1)
 	splitter.connect(merger, 0, 0)
 	
@@ -146,7 +152,7 @@ function initAudio(){
 		if (this.dataset.filteron === 'false') {
 			// turn on filter
 			track.disconnect();
-			track.connect(iirfilter).connect(splitter);
+			track.connect(iirfilter).connect(analyser).connect(splitter);
 			// set ui attributes
 			this.setAttribute('data-filteron', 'true');
 			this.setAttribute('aria-pressed', 'true');
@@ -154,7 +160,7 @@ function initAudio(){
 		} else {
 			// turn off filter
 			track.disconnect();
-			track.connect(splitter);
+			track.connect(analyser).connect(splitter);
 			// set ui attributes
 			this.setAttribute('data-filteron', 'false');
 			this.setAttribute('aria-pressed', 'false');
