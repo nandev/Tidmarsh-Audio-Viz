@@ -1,4 +1,4 @@
-const h = 50;
+const h = 60;
 const w = 20;
 var pos_x = [];
 var pos_y = [];
@@ -7,67 +7,74 @@ var n_ver = 0;
 var r_h = [];
 var r_w = [];
 var layers = [];
-var sinsq = [0.   , 0.001, 0.004, 0.01 , 0.018, 0.028, 0.039, 0.053, 0.069,
-       0.087, 0.107, 0.129, 0.152, 0.176, 0.202, 0.23 , 0.258, 0.288,
-       0.319, 0.35 , 0.382, 0.415, 0.448, 0.481, 0.515, 0.548, 0.581,
-       0.614, 0.646, 0.677, 0.708, 0.738, 0.767, 0.794, 0.821, 0.845,
-       0.869, 0.89 , 0.91 , 0.928, 0.945, 0.959, 0.971, 0.981, 0.989,
-       0.995, 0.999, 1.   , 0.999, 0.996, 0.991, 0.983, 0.974, 0.962,
-       0.948, 0.933, 0.915, 0.895, 0.874, 0.851, 0.827, 0.801, 0.774,
-       0.745, 0.716, 0.685, 0.654, 0.622, 0.589, 0.556, 0.523, 0.49 ,
-       0.456, 0.423, 0.39 , 0.358, 0.327, 0.296, 0.266, 0.237, 0.209,
-       0.183, 0.158, 0.134, 0.112, 0.092, 0.074, 0.057, 0.043, 0.03 ,
-       0.02 , 0.012, 0.006, 0.002, 0.   , 0.001, 0.003, 0.008, 0.016,
-       0.025, 0.036, 0.05 , 0.065, 0.083, 0.102, 0.123, 0.146, 0.17 ,
-       0.196, 0.223, 0.251, 0.281, 0.311, 0.342, 0.374, 0.407, 0.44 ,
-       0.473, 0.506, 0.54 , 0.573, 0.606, 0.638, 0.67 , 0.701, 0.731,
-       0.76 , 0.788, 0.814, 0.839, 0.863, 0.885, 0.906, 0.924, 0.941,
-       0.956, 0.968, 0.979, 0.987, 0.994, 0.998, 1.   , 1.   , 0.997,
-       0.992, 0.985, 0.976, 0.965, 0.952, 0.937, 0.92 , 0.9  , 0.88 ,
-       0.857, 0.833, 0.807, 0.78 , 0.752, 0.723, 0.693, 0.662, 0.63 ,
-       0.597, 0.564, 0.531, 0.498, 0.464, 0.431, 0.398, 0.366, 0.334,
-       0.303, 0.273, 0.244, 0.216, 0.189, 0.164, 0.14 , 0.117, 0.097]
+var lr_flip = [];
+var lr_steps = [];
+const lr_speed = 5;
+const ud_speed = 1;
+
 function setup() {
   	createCanvas(windowWidth, windowHeight);
-  	frameRate(5);
+  	frameRate(8);
 	
 	let h2 = h/2;
 	let w2 = w/2;
 	n_hor = windowWidth/w - 1;
 	n_ver = windowHeight/h - 1;
 	for(let j = 0; j<n_ver; j++){
-		pos_x[j] = []; pos_y[j] = []; r_h[j] = []; r_w[j] = []; layers[j] = [];
+		pos_x[j] = []; pos_y[j] = []; r_h[j] = []; r_w[j] = []; layers[j] = []; 
+		lr_steps[j] = []; lr_flip[j] = []
 		for(let i = 0; i<n_hor; i++ ){
 			pos_x[j][i] = w+i*w+floor(random(-h2,h2));
 			pos_y[j][i] = h+j*h+floor(random(-w2,w2));
 			r_h[j][i] = floor(h*(1 - random(0, 0.5)));
 			r_w[j][i] = floor(w*(0.5 - random(0, 0.4)));
 			layers[j][i] = floor(random(0.4, 0.8)*r_h[j][i]/3);
+			lr_steps[j][i] = 0;
+			lr_flip[j][i] = 1;
 		}
 	}
 }
 
 function draw() {
-	background(255);
+	let ud_step = frameCount%(data.steps/ud_speed)*ud_speed;
+	background(0);
 	for(let j = 0; j<n_ver; j++){
 		for(let i = 0; i<n_hor; i++ ){
-			tree(pos_x[j][i], pos_y[j][i], r_h[j][i], r_w[j][i], layers[j][i]);
+			if(lr_steps[j][i]!=0){			
+				lr_steps[j][i] = lr_steps[j][i]+lr_speed;
+				if(lr_steps[j][i]>=data.steps) lr_steps[j][i]=0;
+			}
+			else if(coin_flip(0.01)){
+				lr_steps[j][i]=1;
+				lr_flip[j][i] = -lr_flip[j][i];
+			}
+			tree(pos_x[j][i], pos_y[j][i], r_h[j][i], r_w[j][i], layers[j][i], ud_step, lr_steps[j][i], lr_flip[j][i]);
 		}
 	}
 }
 
-function tree(x,y,h,w,l){
-	let jitter = sinsq[frameCount%180]*0.2;
-	//h = round(h*(1+jitter));
+function tree(x,y,h,w,l,ud_step,step,flip){
+	let y_h = y-h;
 	noFill();
-	stroke(color('#300313'));
-	line(x,y,x,y-h);
-	stroke(color('#1e7d09'));
+	stroke(color('#2ecf00'))
+	//stroke(color('#1e7d09'));
 	for (let i = 1; i<l; i++){
-		let y_o_i = y - h + i*3 + h*jitter;
-		let y_i_i = y - h + (i-1)*3;
-		line(x, y_i_i, x + w, y_o_i);
-		line(x, y_i_i, x - w, y_o_i);
+		let dy = h-i*3
+		let y_o_i = y_h + i*3 + h*data.sinsq[ud_step]*0.1;
+		let y_i_i = y_h + (i-1)*3;
+		let x_c = floor(x + flip*data.bazier20[step][i]*w);
+		let x_l = x_c + w;
+		let x_r = x_c - w;
+		line(x_c, y_i_i, x_l, y_o_i);
+		line(x_c, y_i_i, x_r, y_o_i);
 	}
+	stroke(color('#bda2a2'))
+	//stroke(color('#300313'));
+	bezier(x, y, x, y, x, y_h, x+flip*data.bazier20[step][0]*w, y_h);
+}
+
+function coin_flip(p){
+	let chance = random(0,1);
+	return chance<p;
 }
 
