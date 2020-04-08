@@ -1,32 +1,29 @@
-const tree_h = 60; 
-const tree_w = 20;
-var n_trees;
-var n_tree_h;
-var n_tree_v;
-var trees = [];
-const lr_speed = 5;
-const ud_speed = 1;
-var n_birds;
-const bird_h = 3;
-var fly_speed = 1;
+// global var trees
+var trees = []; 
+var tree_par = {ud_speed: 1, ud_om: 1, lr_speed: 5, h: 60, w: 20, n: 0, n_h: 0, n_v: 0};
+// global var for birds
 var birds = [];
-// globar var for bugs
+var bird_par = {speed: 1, h: 3, n: 0, color: '#cf2900'};
+// global var for bugs
 var bugs =[];
 var bug_par = {speed: 1, h: 1, n: 0, color: '#fff705', branch: 10, d: 0};
+// global var canvas
+var cnv;
 
 class Tree{
-	constructor(id, i, j, w, h, data){
-		let h2 = h/2;
-		let w2 = w/2;
+	constructor(id, par, i, j, data){
 		this.id = id;
+		this.par = par;
 		this.i = i; //colums
 		this.j = j; //rows
-		this.x = w+i*w+floor(random(-h2,h2));
-		this.y = h+j*h+floor(random(-w2,w2));
+		let h = this.par.h; let w = this.par.w;
+		let h2 = h*0.5; let w2 = w*0.5;
+		this.x = w*(1+i)+floor(random(-h2,h2))+5;
+		this.y = h*(1+j)+floor(random(-w2,w2))+5;
 		this.h = floor(h*(1 - random(0, 0.5)));
 		this.w = floor(w*(0.5 - random(0, 0.4)));
 		this.y_top = this.y - this.h;
-		this.layers = floor(random(0.4, 0.8)*this.h/3);
+		this.layers = floor(random(0.4, 0.8)*this.h*0.3333);
 		this.lr_step = 0;
 		this.lr_flip = 1;
 		this.data = data;
@@ -34,7 +31,7 @@ class Tree{
 	
 	draw(wave, p){
 		if(this.lr_step!=0){			
-			this.lr_step = this.lr_step+lr_speed;
+			this.lr_step = this.lr_step+this.par.lr_speed;
 			if(this.lr_step>=this.data.steps) this.lr_step=0;
 		}
 		else if(coin_flip(p)){
@@ -42,9 +39,7 @@ class Tree{
 			this.lr_flip = -this.lr_flip;
 		}
 		let curve = this.data.bazier20[this.lr_step];
-		noFill();
-		stroke(color('#2ecf00')); //stroke(color('#1e7d09'));
-		
+		stroke(color('#2ecf00')); noFill(); 
 		for (let i = 1; i<this.layers; i++){
 			let dy = this.h-i*3
 			let y_o_i = this.y_top + i*3 + this.h*wave*0.1;
@@ -55,48 +50,49 @@ class Tree{
 			line(x_c, y_i_i, x_l, y_o_i);
 			line(x_c, y_i_i, x_r, y_o_i);
 		}
-		stroke(color('#bda2a2')); //stroke(color('#300313'));
+		stroke(color('#bda2a2'));
 		bezier(this.x, this.y, this.x, this.y, this.x, this.y_top, 
 			floor(this.x+this.lr_flip*curve[0]*this.w), this.y_top);
 	}
 }
 
 class Bird{
-	constructor(id, h, color, data){
+	constructor(id, par, data){
 		this.id = id;
-		this.h = h;
+		this.par = par;
 		this.data = data;
-		this.tree = trees[floor(random(0,n_trees-1))];
+		this.tree = trees[floor(random(0,tree_par.n-1))];
 		this.next_tree = null;
 		this.dx = 0; this.dy = 0; this.next_x = 0; this.next_y = 0;
 		this.branch = floor(random(0,this.tree.layers));
-		this.side = round(random(0,1));
-		this.color = color;
+		this.side = 1;
 		this.fly_step = 0;
-		this.x = this.tree.x+this.tree.w/2;
+		this.x = this.tree.x+this.tree.w*0.5;
 		this.y = this.tree.y_top+this.branch*3; 
 	}
 	draw(){
 		let x = this.x;
 		let y = this.y; 
-		let c = color(this.color)
+		let h = this.par.h;
+		let c = color(this.par.color)
 		stroke(c); fill(c);
-		triangle(x, y-this.h, x+this.h, y, x-this.h, y);
+		triangle(x, y-h, x+h, y, x-h, y);
 	}
 	fly(p){
-		let c = color(this.color)
+		let c = color(this.par.color)
 		stroke(c); fill(c);
-		if(this.fly_step!=0){		
-			let curve = this.data.sinsq[this.fly_step];
-			let x = this.dx*this.fly_step+this.x+curve*this.h*10;
-			let y = this.dy*this.fly_step+this.y+curve*this.h*10;
+		if(this.fly_step!=0){	
+			let h = this.par.h;	
+			let curve = this.data.sinsq[this.fly_step]*h*10;
+			let x = this.dx*this.fly_step+this.x+curve;
+			let y = this.dy*this.fly_step+this.y+curve;
 			if(this.fly_step%2){
-				triangle(x, y, x+this.h, y-this.h, x-this.h, y-this.h);
+				triangle(x, y, x+h, y-h, x-h, y-h);
 			}else{
-				triangle(x, y-this.h, x+this.h, y, x-this.h, y);
+				triangle(x, y-h, x+h, y, x-h, y);
 			}
-				
-			this.fly_step = this.fly_step+fly_speed;
+			// next step	
+			this.fly_step = this.fly_step+this.par.speed;
 			if(this.fly_step>=this.data.steps) {
 				this.x = this.next_x; this.y = this.next_y;
 				this.tree = this.next_tree;
@@ -105,16 +101,17 @@ class Bird{
 		}
 		else if(coin_flip(p)){
 			this.fly_step=1;
+			// find random next tree
 			let next_id = this.tree.id;
 			while(next_id == this.tree.id){
 				let j = floor(this.tree.j+random(-2,2));
-				j = value_limit(j,0,n_tree_v-1);
+				j = value_limit(j,0,tree_par.n_v-1);
 				let i = floor(this.tree.i+random(-2,2));
-				i = value_limit(i,0,n_tree_h-1);
-				next_id = j*n_tree_h+i;
+				i = value_limit(i,0,tree_par.n_h-1);
+				next_id = j*tree_par.n_h+i;
 			}	
 			this.next_tree = trees[next_id];
-			this.next_x = this.next_tree.x+this.next_tree.w/2;
+			this.next_x = this.next_tree.x+this.next_tree.w*0.5;
 			this.next_y = this.next_tree.y_top+this.branch*3;
 			this.dy = (this.next_y - this.y)/this.data.steps;
 			this.dx = (this.next_x - this.x)/this.data.steps;
@@ -122,7 +119,8 @@ class Bird{
 			let curve = this.data.bazier20[this.tree.lr_step];
 			let x = this.x + this.tree.lr_flip*curve[this.branch]*this.tree.w;
 			let y = this.y; 
-			triangle(x, y-this.h, x+this.h/2, y, x-this.h/2, y);
+			let h = this.par.h;
+			triangle(x, y-h, x+h*0.5, y, x-h*0.5, y);
 		}
 	}
 }
@@ -132,12 +130,13 @@ class Bug{
 		this.id = id;
 		this.par = par;
 		this.data = data;
-		this.tree = trees[floor(random(0,n_trees-1))];
+		this.tree = trees[floor(random(0,tree_par.n-1))];
 		this.side = 1;
 		this.fly_step = 0;
-		this.x = this.tree.x+this.tree.w/2;
+		this.x = this.tree.x+this.tree.w*0.5;
 		this.y = this.tree.y_top+this.par.branch*3;
 		this.om = 6.28/this.data.steps; 
+		this.d = 0;
 	}
 	fly(p){
 		let c = color(this.par.color)
@@ -145,56 +144,63 @@ class Bug{
 		if(this.fly_step!=0){
 			// flying path		
 			let curve = this.side*this.data.sinsq[this.fly_step]*2;
-			let y = floor(this.y+curve*random(this.par.d-2,this.par.d));
-			let x = floor(this.x-Math.sin(this.fly_step*this.om)*this.par.d);
+			let y = floor(this.y+curve*random(this.d-2,this.d));
+			let x = floor(this.x-Math.sin(this.fly_step*this.om)*this.d);
+			let h = this.par.h;
 			// draw bug flying
 			if(this.fly_step%2){
-				triangle(x, y, x+this.par.h, y-this.par.h, x-this.par.h, y-this.par.h);
+				triangle(x, y, x+h, y-h, x-h, y-h);
 			}else{
-				triangle(x, y-this.par.h, x+this.par.h, y, x-this.par.h, y);
+				triangle(x, y-h, x+h, y, x-h, y);
 			}
 			// draw a halo
 			let c = color(255,255,255,random(0,70))
 			stroke(c); fill(c);
-			circle(x, y, this.par.h*5);	
+			circle(x, y, h*5);	
 			// next step
-			this.fly_step = this.fly_step+fly_speed;
-			if(this.fly_step>=this.data.steps) {
-				this.fly_step=0;
-			}
+			this.fly_step = this.fly_step+this.par.speed;
+			if(this.fly_step>=this.data.steps) this.fly_step=0;
 		}
 		else if(coin_flip(p)){
 			this.fly_step=1; this.side = -this.side;
+			this.d = random(this.par.d*0.5, this.par.d);
 		}else{
-			let x = this.x;
-			let y = this.y; 
-			triangle(x, y-this.par.h, x+this.par.h/2, y, x-this.par.h/2, y);
+			let x = this.x; let y = this.y; let h = this.par.h;
+			triangle(x, y-h, x+h*0.5, y, x-h*0.5, y);
 		}
 	}
 }
 
+function windowResized(){
+	//resizeCanvas(windowWidth, windowHeight);
+}
+
 function setup() {
+	// setup audio stream  
 	initAudio();
-	let banner = 100;
-  	let cnv = createCanvas(windowWidth, windowHeight-banner);
-	cnv.position(0, banner);
+	// setup canvas
+  	cnv = createCanvas(windowWidth, windowHeight);
+	cnv.position(0, 0);
+	cnv.style('z-index', -1);
+	// setup framerate
   	frameRate(8);
+	
 	// generate population size
-	n_tree_h = floor(windowWidth/tree_w - 1);
-	n_tree_v = floor(windowHeight/tree_h - 1);
-	n_trees  = n_tree_h*n_tree_v;
-	n_birds  = floor(n_tree_h*n_tree_v/5);
-	bug_par.n = 1;//n_birds;
-	bug_par.d = tree_h/4;
+	tree_par.n_h = floor((width-10)/tree_par.w);
+	tree_par.n_v = floor((height-10)/tree_par.h);
+	tree_par.n  = tree_par.n_h*tree_par.n_v;
+	bird_par.n  = floor(tree_par.n*0.2);
+	bug_par.n = bird_par.n;
+	bug_par.d = tree_par.h*0.25;
 	// generate trees
-	for(let id = 0; id<n_trees; id++){
-		let j = floor(id/n_tree_h);
-		let i = id%n_tree_h;
-		trees[id] = new Tree(id, i, j, tree_w, tree_h, data);
+	for(let id = 0; id<tree_par.n; id++){
+		let j = floor(id/tree_par.n_h);
+		let i = id%tree_par.n_h;
+		trees[id] = new Tree(id, tree_par, i, j, data);
 	}
 	// generate birds
-	for(let i = 0; i<n_birds; i++){
-		birds[i]=new Bird(i, bird_h, '#cf2900', data);
+	for(let i = 0; i<bird_par.n; i++){
+		birds[i]=new Bird(i, bird_par, data);
 	}
 	// generate birds
 	for(let i = 0; i<bug_par.n; i++){
@@ -203,30 +209,39 @@ function setup() {
 }
 
 function draw() {
+	// get sound analysis
 	analyser.getByteFrequencyData(dataArray);
 	// console.log(dataArray)
+	
+	// update probabilities
 	let p_bug = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //day
-	let p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //night
+	let p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001;
+	//let p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //night
 	let p_tree = Math.pow((dataArray[0] + dataArray[0])/100,2)*0.01;
+	
+	// draw background
 	background(0);
 	// draw trees
-	let ud_step = frameCount%(data.steps/ud_speed)*ud_speed;
-	for(let id = 0; id<n_trees; id++){
+	let ud_step = frameCount%(data.steps*tree_par.ud_om)*tree_par.ud_speed;
+	for(let id = 0; id<tree_par.n; id++){
 		trees[id].draw(data.sinsq[ud_step], p_tree);
 	}
-	for(let i = 0; i<n_birds; i++){
+	// draw birds
+	for(let i = 0; i<bird_par.n; i++){
 		birds[i].fly(p_bird);
 	}
+	//draw bugs
 	for(let i = 0; i<bug_par.n; i++){
 		bugs[i].fly(p_bug);
 	}
 }
 
+// unitility
 function coin_flip(p){
 	let chance = random(0,1);
 	return chance<p;
 }
-
+// unitility
 function value_limit(val, min, max) {
   return val < min ? min : (val > max ? max : val);
 }
