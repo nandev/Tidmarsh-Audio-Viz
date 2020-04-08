@@ -10,6 +10,9 @@ var n_birds;
 const bird_h = 3;
 var fly_speed = 1;
 var birds = [];
+// globar var for bugs
+var bugs =[];
+var bug_par = {speed: 1, h: 1, n: 0, color: '#fff705', branch: 10, d: 0};
 
 class Tree{
 	constructor(id, i, j, w, h, data){
@@ -124,6 +127,52 @@ class Bird{
 	}
 }
 
+class Bug{
+	constructor(id, par, data){
+		this.id = id;
+		this.par = par;
+		this.data = data;
+		this.tree = trees[floor(random(0,n_trees-1))];
+		this.side = 1;
+		this.fly_step = 0;
+		this.x = this.tree.x+this.tree.w/2;
+		this.y = this.tree.y_top+this.par.branch*3;
+		this.om = 6.28/this.data.steps; 
+	}
+	fly(p){
+		let c = color(this.par.color)
+		stroke(c); fill(c);
+		if(this.fly_step!=0){
+			// flying path		
+			let curve = this.side*this.data.sinsq[this.fly_step]*2;
+			let y = floor(this.y+curve*random(this.par.d-2,this.par.d));
+			let x = floor(this.x-Math.sin(this.fly_step*this.om)*this.par.d);
+			// draw bug flying
+			if(this.fly_step%2){
+				triangle(x, y, x+this.par.h, y-this.par.h, x-this.par.h, y-this.par.h);
+			}else{
+				triangle(x, y-this.par.h, x+this.par.h, y, x-this.par.h, y);
+			}
+			// draw a halo
+			let c = color(255,255,255,random(0,70))
+			stroke(c); fill(c);
+			circle(x, y, this.par.h*5);	
+			// next step
+			this.fly_step = this.fly_step+fly_speed;
+			if(this.fly_step>=this.data.steps) {
+				this.fly_step=0;
+			}
+		}
+		else if(coin_flip(p)){
+			this.fly_step=1; this.side = -this.side;
+		}else{
+			let x = this.x;
+			let y = this.y; 
+			triangle(x, y-this.par.h, x+this.par.h/2, y, x-this.par.h/2, y);
+		}
+	}
+}
+
 function setup() {
 	initAudio();
 	let banner = 100;
@@ -135,6 +184,8 @@ function setup() {
 	n_tree_v = floor(windowHeight/tree_h - 1);
 	n_trees  = n_tree_h*n_tree_v;
 	n_birds  = floor(n_tree_h*n_tree_v/5);
+	bug_par.n = 1;//n_birds;
+	bug_par.d = tree_h/4;
 	// generate trees
 	for(let id = 0; id<n_trees; id++){
 		let j = floor(id/n_tree_h);
@@ -145,12 +196,16 @@ function setup() {
 	for(let i = 0; i<n_birds; i++){
 		birds[i]=new Bird(i, bird_h, '#cf2900', data);
 	}
+	// generate birds
+	for(let i = 0; i<bug_par.n; i++){
+		bugs[i]=new Bug(i, bug_par, data);
+	}
 }
 
 function draw() {
 	analyser.getByteFrequencyData(dataArray);
-	console.log(dataArray)
-	//let p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //day
+	// console.log(dataArray)
+	let p_bug = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //day
 	let p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //night
 	let p_tree = Math.pow((dataArray[0] + dataArray[0])/100,2)*0.01;
 	background(0);
@@ -161,6 +216,9 @@ function draw() {
 	}
 	for(let i = 0; i<n_birds; i++){
 		birds[i].fly(p_bird);
+	}
+	for(let i = 0; i<bug_par.n; i++){
+		bugs[i].fly(p_bug);
 	}
 }
 
