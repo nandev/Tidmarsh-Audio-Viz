@@ -101,7 +101,7 @@ function initAudio(){
 	noisegraph2.connect(merger, 0, 1)
 	noisegraph.connect(merger, 0, 0)
 	noisegraph.connect(merger, 0, 1)
-	track.connect(analyser).connect(splitter)
+	track.connect(iirfilter).connect(analyser).connect(splitter)
 	splitter.connect(merger, 1, 1)
 	splitter.connect(merger, 0, 0)
 	

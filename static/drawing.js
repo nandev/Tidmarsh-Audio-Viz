@@ -126,7 +126,9 @@ class Bird{
 
 function setup() {
 	initAudio();
-  	createCanvas(windowWidth, windowHeight);
+	let banner = 100;
+  	let cnv = createCanvas(windowWidth, windowHeight-banner);
+	cnv.position(0, banner);
   	frameRate(8);
 	// generate population size
 	n_tree_h = floor(windowWidth/tree_w - 1);
@@ -147,8 +149,9 @@ function setup() {
 
 function draw() {
 	analyser.getByteFrequencyData(dataArray);
-	// console.log(dataArray)
-	let p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001;
+	console.log(dataArray)
+	//let p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //day
+	let p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //night
 	let p_tree = Math.pow((dataArray[0] + dataArray[0])/100,2)*0.01;
 	background(0);
 	// draw trees
