@@ -17,8 +17,8 @@ class Tree{
 		this.i = i; //colums
 		this.j = j; //rows
 		let h = this.par.h; let w = this.par.w;
-		let h2 = h*0.5; let w2 = w*0.5;
-		this.x = w*(1+i)+floor(random(-h2,h2))+5;
+		let h2 = h*0.5; let w2 = w*0.3;
+		this.x = w*(0.5+i)+floor(random(-h2,h2))+5;
 		this.y = h*(1+j)+floor(random(-w2,w2))+5;
 		this.h = floor(h*(1 - random(0, 0.5)));
 		this.w = floor(w*(0.5 - random(0, 0.4)));
@@ -176,8 +176,14 @@ function windowResized(){
 }
 
 function setup() {
+	// get the audio element
+	const audioElement = document.querySelector('audio');
+	audioElement.crossorigin = 'anonymous'
+	
 	// setup audio stream  
-	initAudio();
+	this.audio = new AudioSource(audioElement);
+	initUI(audio, audioElement);
+	
 	// setup canvas
   	cnv = createCanvas(windowWidth, windowHeight);
 	cnv.position(0, 0);
@@ -210,7 +216,7 @@ function setup() {
 
 function draw() {
 	// get sound analysis
-	analyser.getByteFrequencyData(dataArray);
+	let dataArray = this.audio.analyse();
 	// console.log(dataArray)
 	
 	// update probabilities
