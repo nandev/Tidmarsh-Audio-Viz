@@ -8,6 +8,9 @@ const bird_par = {speed: 1, h: 3, n: 0, color: '#cf2900'};
 const bugs =[];
 const bug_par = {speed: 1, h: 1, n: 0, color: '#fff705', branch: 10, d: 0};
 
+var audio = null;
+var audio_status = 0;
+
 class Tree{
 	constructor(id, par, i, j, data){
 		this.id = id;
@@ -173,15 +176,47 @@ function windowResized(){
 	//resizeCanvas(windowWidth, windowHeight);
 }
 
+function creatAudioElement(){
+    let ae = document.createElement("AUDIO");
+    ae.controls = false;
+    ae.setAttribute("crossorigin","anonymous")
+    if (ae.canPlayType("audio/mpeg")) {
+        ae.setAttribute("src","https://doppler.media.mit.edu/impoundment.mp3");
+    } else {
+        ae.setAttribute("src","https://doppler.media.mit.edu/impoundment.ogg");
+    }
+    document.body.appendChild(ae);
+    return ae;
+}
+
 function setup() {
 	// get the audio element
-	const audioElement = document.querySelector('audio');
-	audioElement.crossorigin = 'anonymous'
+	const audioElement = creatAudioElement();
 	
 	// setup audio stream  
-	this.audio = new AudioSource(audioElement);
-	initUI(audio, audioElement);
-	
+    
+	try{
+        audio_status = 1; // status: connected audio
+		audio = new AudioSource(audioElement);
+        try{
+            audio_status = 2; // status: advanced audio
+            audio.advanced();
+        }catch(err) {
+            // browser does not support advanced player
+            audio_status = 1;
+            audio.simple();
+            document.getElementById("err_msg").innerHTML = err.message;
+        }
+	}
+    catch(err) {
+        // browser does not support player
+        audio_status == 0;
+        document.getElementById("err_msg").innerHTML = err.message;
+    }
+    if(audio_status>0){
+        initUI(audio, audioElement);
+    }
+    
 	// setup canvas
   	let cnv = createCanvas(windowWidth, windowHeight);
 	cnv.position(0, 0);
@@ -212,16 +247,21 @@ function setup() {
 	}
 }
 
-function draw() {
-	// get sound analysis
-	let dataArray = this.audio.analyse();
-	// console.log(dataArray)
-	
-	// update probabilities
-	let p_bug = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //day
-	let p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001;
-	//let p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //night
-	let p_tree = Math.pow((dataArray[0] + dataArray[0])/100,2)*0.01;
+function draw() {	
+    let p_bug = 0.01;
+    let p_bird = 0.01;
+    let p_tree = 0.01;
+    
+    // get sound analysis
+    if(audio_status>1) {
+        let dataArray = audio.analyse();
+    	// console.log(dataArray)
+    	// update probabilities
+    	p_bug = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //day
+    	p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001;
+    	//let p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //night
+    	p_tree = Math.pow((dataArray[0] + dataArray[0])/100,2)*0.01;
+    } 
 	
 	// draw background
 	background(0);

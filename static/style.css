@@ -1,6 +1,8 @@
 body{
 	background-color: black;
 	margin: 0px 0px;
+	color: white;
+	font-size: 12px;
 }
 .button {
   border-radius: 10px;

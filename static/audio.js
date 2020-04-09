@@ -5,44 +5,34 @@ class AudioSource{
 		// create audio context (for legacy browsers)
 		let AudioContext = window.AudioContext || window.webkitAudioContext;
 		this.audioContext = new AudioContext();
+		
+		// pass it into the audio context
+		this.track = this.audioContext.createMediaElementSource(this.audioElement);
+		
+		// add gain node
+		this.gainNode = this.audioContext.createGain();
+		
+		// create output destination
+		this.dest = this.audioContext.destination;
+		
+		// set analyser to null
+		this.analyser = null;
+	}
 	
+	advanced(){
 		// analyzer
 		this.analyser = this.audioContext.createAnalyser();
 		this.analyser.fftSize = 32;
 		this.analyserBufferLength = this.analyser.frequencyBinCount;
 		this.dataArray = new Uint8Array(this.analyserBufferLength);
-	
-		// pass it into the audio context
-		this.track = this.audioContext.createMediaElementSource(this.audioElement);
-
-		// add gain node
-		this.gainNode = this.audioContext.createGain();
 		
 		// create a bandpass filder node
-		let coefs = 
-		[	
-			{	name: "bandpass wp = [0.05, 0.25] ws = [0.001, 0.3]",
-				feedforward: [0.00672709, -0.05285259,  0.19853036, -0.4791963,  
-					0.84126811, -1.14964787,  1.27034242, -1.14964787,  0.84126811, 
-					-0.4791963, 0.19853036, -0.05285259,  0.00672709],
-				feedback: [1.,  -10.1093273 ,   47.88742976, -140.58683816, 284.92741527, 
-					-419.99254805,  461.69555317, -381.37521159, 234.93874721, 
-					-105.26567646,   32.56445247,   -6.2457378, 0.56174403]
-			},
-			{	name: "highpass wp = 0.05 ws = 0.001",
-				feedforward: [0.82242664, -1.64478801,  0.82242664],
-				feedback: [1.        , -1.83516742,  0.85587082]
-			},
-			{	name: "highpass wp = 0.1 ws = 0.001",
+		let coefs = {	
 				feedforward: [0.75543232, -1.51062183,  0.75543232],
 				feedback: [1.        , -1.65657472,  0.73358885]
 			}
-		]
-		let filterIndex = 2;
-		let feedForward = coefs[filterIndex].feedforward,
-			feedBack = coefs[filterIndex].feedback;
-		this.iirfilter = this.audioContext.createIIRFilter(feedForward, feedBack);
-	
+		this.iirfilter = this.audioContext.createIIRFilter(coefs.feedforward, coefs.feedback);
+		
 		// create noise source 
 	    this.noiseBufferSize = this.audioContext.sampleRate * 2; 
 	    this.buffer = this.audioContext.createBuffer(1, this.noiseBufferSize, this.audioContext.sampleRate); 
@@ -74,46 +64,51 @@ class AudioSource{
 		this.noisegraph2 = this.noise.connect(this.bandpass).connect(this.noiseGain2)
 		// start noise source
 	    this.noise.start();
-	
+		
 		// create splitter and merger to route noise and audio sources
 		this.merger = this.audioContext.createChannelMerger(3);
 		this.splitter = new ChannelSplitterNode(this.audioContext, {
 			numberOfOutputs : 2 });
 			
-		// create output destination
-		this.dest = this.audioContext.destination;
-	
 		// connect graph
-		this.noisegraph2.connect(this.merger, 0, 0)
-		this.noisegraph2.connect(this.merger, 0, 1)
-		this.noisegraph1.connect(this.merger, 0, 0)
-		this.noisegraph1.connect(this.merger, 0, 1)
-		this.track.connect(this.iirfilter).connect(this.analyser).connect(this.splitter)
-		this.splitter.connect(this.merger, 1, 1)
-		this.splitter.connect(this.merger, 0, 0)
+		this.noisegraph2.connect(this.merger, 0, 0);
+		this.noisegraph2.connect(this.merger, 0, 1);
+		this.noisegraph1.connect(this.merger, 0, 0);
+		this.noisegraph1.connect(this.merger, 0, 1);
+		this.track.connect(this.iirfilter).connect(this.analyser).connect(this.splitter);
+		this.splitter.connect(this.merger, 1, 1);
+		this.splitter.connect(this.merger, 0, 0);
+		this.graph = this.merger;
 	}
-
+	
+	simple(){
+		this.graph = this.track;
+	}
+	
 	play(){
 		// check if context is in suspended state (autoplay policy)
 		if (this.audioContext.state === 'suspended') {
 	        this.audioContext.resume();
 	    }
 		// create dest
-		this.merger.connect(this.gainNode).connect(this.dest);
+		this.graph.connect(this.gainNode).connect(this.dest);
 		// start audio
 		this.audioElement.play();
 	}
 	
 	pause(){
 		// pause audio
+		this.graph.disconnect()
 		this.audioElement.pause();
-		this.noise.disconnect()
 	}
 	
 	analyse(){
 		// frequency analysis
-		this.analyser.getByteFrequencyData(this.dataArray);
-		return this.dataArray;
+		if(this.analyser!=null){
+			this.analyser.getByteFrequencyData(this.dataArray);
+			return this.dataArray;
+		}
+		return null;
 	}
 }
 	
