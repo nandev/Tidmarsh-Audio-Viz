@@ -122,10 +122,25 @@ function creatErrMsgDom(){
 	return p;
 }
 
+function creatTitleDom(text){
+	let p = document.createElement("P");
+	p.id = "title"
+	p.innerHTML = text;
+	panel = document.querySelector('#control');
+	panel.appendChild(p); 
+	return p;
+}
+
+function createControlPanel(){
+	let a = document.createElement("DIV");
+	a.id = "control";
+	document.body.appendChild(a); 
+}
+
 function creatPlayerControl(){
 	// create play pause button
 	let a = document.createElement("DIV");
-	a.id = "control";
+	a.id = "play";
 	a.role = "button";
 	a.dataset.playing = false;
 	let pause = document.createElement("IMG");
@@ -135,7 +150,8 @@ function creatPlayerControl(){
 	let play = document.createElement("IMG");
 	play.id = "play_img";
 	play.src = "/static/play.png";
-	document.body.appendChild(a); 
+	panel = document.querySelector('#control');
+	panel.appendChild(a); 
 	a.appendChild(pause);
 	a.appendChild(play);
 	
@@ -171,7 +187,8 @@ function createVolSlider(){
 	v.id = "volume";
 	v.type = "range";
 	v.in= 0; v.max=2; v.value=1; v.step=0.01;
-	document.body.appendChild(a); 
+	panel = document.querySelector('#control');
+	panel.appendChild(a);
 	a.appendChild(img); 
 	a.appendChild(v); 
 	

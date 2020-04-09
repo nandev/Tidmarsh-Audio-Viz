@@ -196,6 +196,8 @@ function creatAudioElement(){
     // behavior
 	ae.addEventListener('ended', () => {
 		document.querySelector('#control').dataset.playing = 'false';
+		document.querySelector('#play_img').style.visibility = "visible";
+		document.querySelector('#pause_img').style.visibility = "hidden";
         audio.pause();
 	}, false);
     
@@ -205,6 +207,8 @@ function creatAudioElement(){
 function setup() {
     // error msg display
     let msgElement = creatErrMsgDom();
+    createControlPanel();
+    creatTitleDom("Live Audio Tidmarsh Wildlife");
     createVolSlider();
     creatPlayerControl();
     
@@ -223,7 +227,7 @@ function setup() {
             audio_status = 1;
             audio.simple();      
             msgElement.innerHTML = "Your browser does't support advanced audio features."
-            msgElement.innerHTML = err.message;
+            // msgElement.innerHTML = err.message;
             msgElement.style.visibility = "visible"; 
         }
 	}
@@ -231,7 +235,7 @@ function setup() {
         // browser does not support player
         audio_status == 0;
         msgElement.innerHTML = "Your browser does't support the audio player."
-        msgElement.innerHTML = err.message;
+        // msgElement.innerHTML = err.message;
         msgElement.style.visibility = "visible"; 
     }
 
@@ -303,6 +307,7 @@ function coin_flip(p){
 	let chance = random(0,1);
 	return chance<p;
 }
+
 // unitility
 function value_limit(val, min, max) {
   return val < min ? min : (val > max ? max : val);
