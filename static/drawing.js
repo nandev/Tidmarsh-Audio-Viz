@@ -207,11 +207,101 @@ function creatAudioElement(){
     
     return ae;
 }
+	
+function creatErrMsgDom(){
+	let p = document.createElement("P");
+	p.id = "err_msg"
+	p.style.visibility = "hidden";
+	document.body.appendChild(p); 
+	return p;
+}
+
+function createControlPanel(){
+	let a = document.createElement("DIV");
+	a.id = "control";
+	document.body.appendChild(a); 
+    return a;
+}
+
+function creatTitleDom(text){
+	let p = document.createElement("P");
+	p.id = "title"
+	p.innerHTML = text;
+	panel = document.querySelector('#control');
+	panel.appendChild(p); 
+	return p;
+}
+
+function createPlayerControl(){
+	// create play pause button
+	let a = document.createElement("DIV");
+	a.id = "play";
+	a.role = "button";
+	a.dataset.playing = false;
+	let pause = document.createElement("IMG");
+	pause.id = "pause_img";
+	pause.style.visibility = "hidden";
+	pause.src = "/static/pause.png";
+	let play = document.createElement("IMG");
+	play.id = "play_img";
+	play.src = "/static/play.png";
+	panel = document.querySelector('#control');
+	panel.appendChild(a); 
+	a.appendChild(pause);
+	a.appendChild(play);
+	
+	// behavior
+	a.addEventListener('click', function() {
+		if (this.dataset.playing === 'false') {
+			audio.play();
+        	this.setAttribute('data-playing', 'true');
+			this.setAttribute('aria-pressed', 'true');
+			document.querySelector('#play_img').style.visibility = "hidden";
+			document.querySelector('#pause_img').style.visibility = "visible";
+		} else {
+			audio.pause();
+			this.setAttribute('data-playing', 'false');
+			this.setAttribute('aria-pressed', 'false');
+			document.querySelector('#pause_img').style.visibility = "hidden";
+			document.querySelector('#play_img').style.visibility = "visible";
+		}
+	}, false);
+	
+	return a;
+}
+
+function createVolSlider(){
+	let a = document.createElement("DIV");
+	a.id = "volume_div";
+	let img = document.createElement("IMG");
+	img.id = "volume_img";
+	img.src = "/static/volume.png";
+	let v = document.createElement("INPUT");
+	v.id = "volume";
+	v.type = "range";
+	v.in= 0; v.max=2; v.value=1; v.step=0.01;
+	panel = document.querySelector('#control');
+	panel.appendChild(a);
+	a.appendChild(img); 
+	a.appendChild(v); 
+	
+	// behavior
+	v.addEventListener('input', function() {
+		audio.gainNode.gain.value = this.value;
+	}, false);
+	
+	return v 
+}
+
+function createSimpleControl(){
+	let a = document.querySelector('#audio');
+	a.controls = true; 
+}
 
 function setup() {
     // error msg display
     let msgElement = creatErrMsgDom();
-    createControlPanel();
+    let ctlElement = createControlPanel();
 	
 	// setup audio stream  
 	try{
@@ -236,6 +326,7 @@ function setup() {
     }else{
         let audioElement = creatAudioElement();
         audioElement.controls = true;
+        ctlElement.style.backgroundColor = "rgba(0,0,0,0)";
     }
     
 	// setup canvas
