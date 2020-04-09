@@ -125,8 +125,8 @@ class Bird{
 		}
 	}
     flylimit(index, maximum){
-        if (index<0) index = index + 2;
-        else if (index >= maximum) index = index - 2;
+        if (index<0) index = index + 4;
+        else if (index >= maximum) index = index - 4;
         return index
     }
 }
@@ -360,13 +360,20 @@ function draw() {
     let p_tree = 0.01;
     
     // get sound analysis
-    if(audio_status>1) {
+    if(audio_status>0) {
         let dataArray = audio.analyse();
     	// console.log(dataArray)
     	// update probabilities
-    	p_bug = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //day
-    	p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001;
-    	//let p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //night
+        let td = new Date();
+        let t = td.getHours();
+        // night
+        if (t>19 && t<5){
+        	p_bug = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //high
+        	p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //low
+        }else{
+        	p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //high
+        	p_bug = Math.pow((dataArray[6])/70,4)*0.01; //low
+        }
     	p_tree = Math.pow((dataArray[0] + dataArray[0])/100,2)*0.01;
     } 
 	
