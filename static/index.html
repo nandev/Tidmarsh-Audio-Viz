@@ -1,8 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-61713612-3"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-61713612-3');
+	</script>
 	<script src="/static/audio.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/p5@1.0.0/lib/p5.js"></script>
+	<script src="/static/p5.min.js"></script>
 	<script src="/static/lut_30.js"></script>
 	<script src="/static/drawing.js"></script>
 	<link rel="shortcut icon" href="/static/favicon.ico">
@@ -13,12 +22,10 @@
 <button class='button' data-playing="false" role="switch" aria-pressed="false">
 Play/Pause
 </button>
-<button class="button-filter" role="switch" data-filteron="true" aria-pressed="false" aria-describedby="label" disabled><span id="label" aria-live="assertive" aria-atomic="true" >Filter Off</span></button>
 <br>
 <input class="slider" type="range" id="volume" min="0" max="2" value="1" step="0.01">
 <div>
-
-
+	
 <audio crossorigin="anonymous" src="https://doppler.media.mit.edu/impoundment.ogg" type="audio/ogg"></audio>
 </div>
 

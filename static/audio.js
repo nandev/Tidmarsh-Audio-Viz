@@ -126,7 +126,7 @@ function initUI(audio, audioElement) {
 	const filterButton = document.querySelector('.button-filter');
 	
 	volumeControl.addEventListener('input', function() {
-	  gainNode.gain.value = this.value;
+	  audio.gainNode.gain.value = this.value;
 	}, false);
 	
 	playButton.addEventListener('click', function() {
@@ -136,14 +136,12 @@ function initUI(audio, audioElement) {
             this.setAttribute('data-playing', 'true');
 			this.setAttribute('aria-pressed', 'true');
 			this.innerText = 'Pause';
-			filterButton.removeAttribute('disabled');
 		} else {
 			audio.pause();
 			// set ui attributes
 			this.setAttribute('data-playing', 'false');
 			this.setAttribute('aria-pressed', 'false');
 			this.innerText = 'Play';
-			filterButton.disabled = 'true';
 		}
 
 	}, false);

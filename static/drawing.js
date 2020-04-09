@@ -1,14 +1,12 @@
 // global var trees
-var trees = []; 
-var tree_par = {ud_speed: 1, ud_om: 1, lr_speed: 5, h: 60, w: 20, n: 0, n_h: 0, n_v: 0};
+const trees = []; 
+const tree_par = {ud_speed: 1, ud_om: 1, lr_speed: 5, h: 60, w: 20, n: 0, n_h: 0, n_v: 0};
 // global var for birds
-var birds = [];
-var bird_par = {speed: 1, h: 3, n: 0, color: '#cf2900'};
+const birds = [];
+const bird_par = {speed: 1, h: 3, n: 0, color: '#cf2900'};
 // global var for bugs
-var bugs =[];
-var bug_par = {speed: 1, h: 1, n: 0, color: '#fff705', branch: 10, d: 0};
-// global var canvas
-var cnv;
+const bugs =[];
+const bug_par = {speed: 1, h: 1, n: 0, color: '#fff705', branch: 10, d: 0};
 
 class Tree{
 	constructor(id, par, i, j, data){
@@ -185,7 +183,7 @@ function setup() {
 	initUI(audio, audioElement);
 	
 	// setup canvas
-  	cnv = createCanvas(windowWidth, windowHeight);
+  	let cnv = createCanvas(windowWidth, windowHeight);
 	cnv.position(0, 0);
 	cnv.style('z-index', -1);
 	// setup framerate
