@@ -1,78 +1,85 @@
 body{
 	background-color: black;
 	margin: 0px 0px;
+}
+
+#err_msg {
+	background-color: rgba(255, 0, 0, 0.5);
 	color: white;
 	font-size: 12px;
-}
-.button {
-  border-radius: 10px;
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  height: 50px;
-  width: 150px;
-  padding: 10px 0px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 10px 25px;
-	opacity: 0.7;
+	font-family: Arial, Helvetica, sans-serif;
+	text-align: center;
+	position: relative;
+	border-radius: 10px;
+	width: 80%;
+	max-width: 400px;
+	padding: 5px 5px;
+	margin: 5px auto;
 }
 
-.button:hover {
-  opacity: 1;
+#control {
+	background-color: rgba(100, 100, 100, 0);
+	border-radius: 50px;
+	position: relative;
+	width: 40px;
+	height: 40px;
+	margin: 5px auto;
+}
+#control:hover {
+  cursor: pointer;
+}
+#control img {
+	position: absolute;
+	width:100%;
 }
 
-.button-filter {
-  border-radius: 10px;
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  height: 50px;
-  width: 100px;
-  padding: 0px 0px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 10px 0px;
-	cursor: pointer;
-	visibility: hidden;
+#volume_div {
+	background-color: rgba(100, 100, 100, 0.8);
+	border-radius: 10px;
+	position: relative;
+	width: 70px;
+	height: 15px;
+	margin: 5px auto;
 }
-
-.slider {
-  position: relative;
+#volume_div img {
+	position: absolute;
+	top: 0px;
+	left: 4px;
+	height: 15px;
+}
+#volume {
   -webkit-appearance: none;
-  height: 20px;
-	width: 150px;
+	position: absolute;
+	top: 4px;
+	left: 22px;
+  height: 3px;
+	width: 40px;
   border-radius: 5px;
   background: #d3d3d3;
   outline: none;
   opacity: 0.7;
   -webkit-transition: .2s;
   transition: opacity .2s;
-  margin: 0px 25px;
 }
 
-.slider:hover {
+#volume:hover {
   opacity: 1;
 }
 
-.slider::-webkit-slider-thumb {
+#volume::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #4CAF50;
+  background: #d3d3d3;
   cursor: pointer;
 }
 
-.slider::-moz-range-thumb {
+#volume::-moz-range-thumb {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #4CAF50;
+  background: #d3d3d3;
   cursor: pointer;
 }

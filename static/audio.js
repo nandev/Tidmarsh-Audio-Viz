@@ -19,6 +19,19 @@ class AudioSource{
 		this.analyser = null;
 	}
 	
+	generateAdvGraph(){
+		this.noisegraph1 = this.noise.connect(this.lowpass).connect(this.noiseGain1)
+		this.noisegraph2 = this.noise.connect(this.bandpass).connect(this.noiseGain2)
+		this.noisegraph2.connect(this.merger, 0, 0);
+		this.noisegraph2.connect(this.merger, 0, 1);
+		this.noisegraph1.connect(this.merger, 0, 0);
+		this.noisegraph1.connect(this.merger, 0, 1);
+		this.track.connect(this.iirfilter).connect(this.analyser).connect(this.splitter);
+		this.splitter.connect(this.merger, 1, 1);
+		this.splitter.connect(this.merger, 0, 0);
+		return this.merger.connect(this.gainNode).connect(this.dest); 
+	}
+	
 	advanced(){
 		// analyzer
 		this.analyser = this.audioContext.createAnalyser();
@@ -55,34 +68,20 @@ class AudioSource{
 	    this.lowpass.frequency.value = 35;
 		// create gain for noise source
 		this.noiseGain1 = this.audioContext.createGain();
-		this.noiseGain1.gain.value = 0.3
+		this.noiseGain1.gain.value = 0.5
 		// create gain for second noise source
 		this.noiseGain2 = this.audioContext.createGain();
-		this.noiseGain2.gain.value = 0.01
-		// start noise source
-		this.noisegraph1 = this.noise.connect(this.lowpass).connect(this.noiseGain1)
-		this.noisegraph2 = this.noise.connect(this.bandpass).connect(this.noiseGain2)
+		this.noiseGain2.gain.value = 0.01		
 		// start noise source
 	    this.noise.start();
 		
 		// create splitter and merger to route noise and audio sources
 		this.merger = this.audioContext.createChannelMerger(3);
-		this.splitter = new ChannelSplitterNode(this.audioContext, {
-			numberOfOutputs : 2 });
-			
-		// connect graph
-		this.noisegraph2.connect(this.merger, 0, 0);
-		this.noisegraph2.connect(this.merger, 0, 1);
-		this.noisegraph1.connect(this.merger, 0, 0);
-		this.noisegraph1.connect(this.merger, 0, 1);
-		this.track.connect(this.iirfilter).connect(this.analyser).connect(this.splitter);
-		this.splitter.connect(this.merger, 1, 1);
-		this.splitter.connect(this.merger, 0, 0);
-		this.graph = this.merger;
+		this.splitter = this.audioContext.createChannelSplitter(2);
 	}
 	
 	simple(){
-		this.graph = this.track;
+		this.graph = this.track.connect(this.gainNode).connect(this.dest);
 	}
 	
 	play(){
@@ -90,16 +89,19 @@ class AudioSource{
 		if (this.audioContext.state === 'suspended') {
 	        this.audioContext.resume();
 	    }
-		// create dest
-		this.graph.connect(this.gainNode).connect(this.dest);
 		// start audio
 		this.audioElement.play();
+		if(audio_status==2) {
+			this.graph = this.generateAdvGraph();
+		}
 	}
 	
 	pause(){
 		// pause audio
-		this.graph.disconnect()
 		this.audioElement.pause();
+		if(audio_status==2) {
+			this.noise.disconnect();
+		}
 	}
 	
 	analyse(){
@@ -112,38 +114,73 @@ class AudioSource{
 	}
 }
 	
-	
-function initUI(audio, audioElement) {
-	// UI
-	const playButton = document.querySelector('button');
-	const volumeControl = document.querySelector('#volume');
-	const pannerControl = document.querySelector('#panner');
-	const filterButton = document.querySelector('.button-filter');
-	
-	volumeControl.addEventListener('input', function() {
-	  audio.gainNode.gain.value = this.value;
-	}, false);
-	
-	playButton.addEventListener('click', function() {
-		if (this.dataset.playing === 'false') {
-			audio.play();
-			// set ui attributes
-            this.setAttribute('data-playing', 'true');
-			this.setAttribute('aria-pressed', 'true');
-			this.innerText = 'Pause';
-		} else {
-			audio.pause();
-			// set ui attributes
-			this.setAttribute('data-playing', 'false');
-			this.setAttribute('aria-pressed', 'false');
-			this.innerText = 'Play';
-		}
+function creatErrMsgDom(){
+	let p = document.createElement("P");
+	p.id = "err_msg"
+	p.style.visibility = "hidden";
+	document.body.appendChild(p); 
+	return p;
+}
 
+function creatPlayerControl(){
+	// create play pause button
+	let a = document.createElement("DIV");
+	a.id = "control";
+	a.role = "button";
+	a.dataset.playing = false;
+	let pause = document.createElement("IMG");
+	pause.id = "pause_img";
+	pause.style.visibility = "hidden";
+	pause.src = "/static/pause.png";
+	let play = document.createElement("IMG");
+	play.id = "play_img";
+	play.src = "/static/play.png";
+	document.body.appendChild(a); 
+	a.appendChild(pause);
+	a.appendChild(play);
+	
+	// behavior
+	a.addEventListener('click', function() {
+		if(audio_status>0) {
+			if (this.dataset.playing === 'false') {
+				audio.play();
+            	this.setAttribute('data-playing', 'true');
+				this.setAttribute('aria-pressed', 'true');
+				document.querySelector('#play_img').style.visibility = "hidden";
+				document.querySelector('#pause_img').style.visibility = "visible";
+			} else {
+				audio.pause();
+				this.setAttribute('data-playing', 'false');
+				this.setAttribute('aria-pressed', 'false');
+				document.querySelector('#pause_img').style.visibility = "hidden";
+				document.querySelector('#play_img').style.visibility = "visible";
+			}
+		}
 	}, false);
 	
-	audioElement.addEventListener('ended', () => {
-		playButton.dataset.playing = 'false';
+	return a;
+}
+
+function createVolSlider(){
+	let a = document.createElement("DIV");
+	a.id = "volume_div";
+	let img = document.createElement("IMG");
+	img.id = "volume_img";
+	img.src = "/static/volume.png";
+	let v = document.createElement("INPUT");
+	v.id = "volume";
+	v.type = "range";
+	v.in= 0; v.max=2; v.value=1; v.step=0.01;
+	document.body.appendChild(a); 
+	a.appendChild(img); 
+	a.appendChild(v); 
+	
+	// behavior
+	v.addEventListener('input', function() {
+		if(audio_status>0) {
+	  	  	audio.gainNode.gain.value = this.value;
+	  	}
 	}, false);
 	
-	
+	return v 
 }

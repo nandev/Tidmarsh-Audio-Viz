@@ -106,9 +106,9 @@ class Bird{
 			let next_id = this.tree.id;
 			while(next_id == this.tree.id){
 				let j = floor(this.tree.j+random(-2,2));
-				j = value_limit(j,0,tree_par.n_v-1);
+				j = this.flylimit(j,tree_par.n_v);
 				let i = floor(this.tree.i+random(-2,2));
-				i = value_limit(i,0,tree_par.n_h-1);
+				i = this.flylimit(i,tree_par.n_h);
 				next_id = j*tree_par.n_h+i;
 			}	
 			this.next_tree = trees[next_id];
@@ -124,6 +124,11 @@ class Bird{
 			triangle(x, y-h, x+h*0.5, y, x-h*0.5, y);
 		}
 	}
+    flylimit(index, maximum){
+        if (index<0) index = index + 2;
+        else if (index >= maximum) index = index - 2;
+        return index
+    }
 }
 
 class Bug{
@@ -177,24 +182,36 @@ function windowResized(){
 }
 
 function creatAudioElement(){
+    // create audio element
     let ae = document.createElement("AUDIO");
     ae.controls = false;
     ae.setAttribute("crossorigin","anonymous")
-    if (ae.canPlayType("audio/mpeg")) {
-        ae.setAttribute("src","https://doppler.media.mit.edu/impoundment.mp3");
-    } else {
+    if (ae.canPlayType("audio/ogg")) {
         ae.setAttribute("src","https://doppler.media.mit.edu/impoundment.ogg");
+    } else {
+        ae.setAttribute("src","https://doppler.media.mit.edu/impoundment.mp3");
     }
     document.body.appendChild(ae);
+    
+    // behavior
+	ae.addEventListener('ended', () => {
+		document.querySelector('#control').dataset.playing = 'false';
+        audio.pause();
+	}, false);
+    
     return ae;
 }
 
 function setup() {
+    // error msg display
+    let msgElement = creatErrMsgDom();
+    createVolSlider();
+    creatPlayerControl();
+    
 	// get the audio element
-	const audioElement = creatAudioElement();
+	let audioElement = creatAudioElement();
 	
 	// setup audio stream  
-    
 	try{
         audio_status = 1; // status: connected audio
 		audio = new AudioSource(audioElement);
@@ -204,19 +221,20 @@ function setup() {
         }catch(err) {
             // browser does not support advanced player
             audio_status = 1;
-            audio.simple();
-            document.getElementById("err_msg").innerHTML = err.message;
+            audio.simple();      
+            msgElement.innerHTML = "Your browser does't support advanced audio features."
+            msgElement.innerHTML = err.message;
+            msgElement.style.visibility = "visible"; 
         }
 	}
     catch(err) {
         // browser does not support player
         audio_status == 0;
-        document.getElementById("err_msg").innerHTML = err.message;
+        msgElement.innerHTML = "Your browser does't support the audio player."
+        msgElement.innerHTML = err.message;
+        msgElement.style.visibility = "visible"; 
     }
-    if(audio_status>0){
-        initUI(audio, audioElement);
-    }
-    
+
 	// setup canvas
   	let cnv = createCanvas(windowWidth, windowHeight);
 	cnv.position(0, 0);
