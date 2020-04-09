@@ -184,21 +184,25 @@ function windowResized(){
 function creatAudioElement(){
     // create audio element
     let ae = document.createElement("AUDIO");
+    ae.id = "advAudio";
     ae.controls = false;
-    ae.setAttribute("crossorigin","anonymous")
+    ae.setAttribute("crossorigin","anonymous");
     if (ae.canPlayType("audio/ogg")) {
         ae.setAttribute("src","https://doppler.media.mit.edu/impoundment.ogg");
     } else {
         ae.setAttribute("src","https://doppler.media.mit.edu/impoundment.mp3");
     }
-    document.body.appendChild(ae);
+	panel = document.querySelector('#control');
+	panel.appendChild(ae); 
     
     // behavior
 	ae.addEventListener('ended', () => {
-		document.querySelector('#control').dataset.playing = 'false';
-		document.querySelector('#play_img').style.visibility = "visible";
-		document.querySelector('#pause_img').style.visibility = "hidden";
-        audio.pause();
+        if(audio_status == 1){
+    		document.querySelector('#control').dataset.playing = 'false';
+    		document.querySelector('#play_img').style.visibility = "visible";
+    		document.querySelector('#pause_img').style.visibility = "hidden";
+            audio.pause();
+        }
 	}, false);
     
     return ae;
@@ -208,37 +212,32 @@ function setup() {
     // error msg display
     let msgElement = creatErrMsgDom();
     createControlPanel();
-    creatTitleDom("Live Audio Tidmarsh Wildlife");
-    createVolSlider();
-    creatPlayerControl();
-    
-	// get the audio element
-	let audioElement = creatAudioElement();
 	
 	// setup audio stream  
 	try{
-        audio_status = 1; // status: connected audio
-		audio = new AudioSource(audioElement);
-        try{
-            audio_status = 2; // status: advanced audio
-            audio.advanced();
-        }catch(err) {
-            // browser does not support advanced player
-            audio_status = 1;
-            audio.simple();      
-            msgElement.innerHTML = "Your browser does't support advanced audio features."
-            // msgElement.innerHTML = err.message;
-            msgElement.style.visibility = "visible"; 
-        }
+        audio_status = 1; // status: advanced audio
+		audio = new AudioSource();
+        audio.advanced(); 
 	}
     catch(err) {
         // browser does not support player
-        audio_status == 0;
-        msgElement.innerHTML = "Your browser does't support the audio player."
+        audio_status = 0;
+        audio = null;
+        msgElement.innerHTML = "Your browser does't support advanced audio features."
         // msgElement.innerHTML = err.message;
         msgElement.style.visibility = "visible"; 
     }
-
+    
+    //UI
+    if(audio_status==1){
+        creatTitleDom("Live Audio Tidmarsh Wildlife");
+        createVolSlider();
+        createPlayerControl();
+    }else{
+        let audioElement = creatAudioElement();
+        audioElement.controls = true;
+    }
+    
 	// setup canvas
   	let cnv = createCanvas(windowWidth, windowHeight);
 	cnv.position(0, 0);

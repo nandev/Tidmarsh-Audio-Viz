@@ -1,6 +1,6 @@
 class AudioSource{
-	constructor(audioElement){
-		this.audioElement = audioElement;
+	constructor(){
+		this.audioElement = creatAudioElement();
 		
 		// create audio context (for legacy browsers)
 		let AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -91,7 +91,7 @@ class AudioSource{
 	    }
 		// start audio
 		this.audioElement.play();
-		if(audio_status==2) {
+		if(audio_status==1) {
 			this.graph = this.generateAdvGraph();
 		}
 	}
@@ -99,7 +99,7 @@ class AudioSource{
 	pause(){
 		// pause audio
 		this.audioElement.pause();
-		if(audio_status==2) {
+		if(audio_status==1) {
 			this.noise.disconnect();
 		}
 	}
@@ -112,6 +112,10 @@ class AudioSource{
 		}
 		return null;
 	}
+	
+	cleanup(){
+		this.track.disconnect();
+	}
 }
 	
 function creatErrMsgDom(){
@@ -120,6 +124,12 @@ function creatErrMsgDom(){
 	p.style.visibility = "hidden";
 	document.body.appendChild(p); 
 	return p;
+}
+
+function createControlPanel(){
+	let a = document.createElement("DIV");
+	a.id = "control";
+	document.body.appendChild(a); 
 }
 
 function creatTitleDom(text){
@@ -131,13 +141,7 @@ function creatTitleDom(text){
 	return p;
 }
 
-function createControlPanel(){
-	let a = document.createElement("DIV");
-	a.id = "control";
-	document.body.appendChild(a); 
-}
-
-function creatPlayerControl(){
+function createPlayerControl(){
 	// create play pause button
 	let a = document.createElement("DIV");
 	a.id = "play";
@@ -157,20 +161,18 @@ function creatPlayerControl(){
 	
 	// behavior
 	a.addEventListener('click', function() {
-		if(audio_status>0) {
-			if (this.dataset.playing === 'false') {
-				audio.play();
-            	this.setAttribute('data-playing', 'true');
-				this.setAttribute('aria-pressed', 'true');
-				document.querySelector('#play_img').style.visibility = "hidden";
-				document.querySelector('#pause_img').style.visibility = "visible";
-			} else {
-				audio.pause();
-				this.setAttribute('data-playing', 'false');
-				this.setAttribute('aria-pressed', 'false');
-				document.querySelector('#pause_img').style.visibility = "hidden";
-				document.querySelector('#play_img').style.visibility = "visible";
-			}
+		if (this.dataset.playing === 'false') {
+			audio.play();
+        	this.setAttribute('data-playing', 'true');
+			this.setAttribute('aria-pressed', 'true');
+			document.querySelector('#play_img').style.visibility = "hidden";
+			document.querySelector('#pause_img').style.visibility = "visible";
+		} else {
+			audio.pause();
+			this.setAttribute('data-playing', 'false');
+			this.setAttribute('aria-pressed', 'false');
+			document.querySelector('#pause_img').style.visibility = "hidden";
+			document.querySelector('#play_img').style.visibility = "visible";
 		}
 	}, false);
 	
@@ -194,10 +196,13 @@ function createVolSlider(){
 	
 	// behavior
 	v.addEventListener('input', function() {
-		if(audio_status>0) {
-	  	  	audio.gainNode.gain.value = this.value;
-	  	}
+		audio.gainNode.gain.value = this.value;
 	}, false);
 	
 	return v 
+}
+
+function createSimpleControl(){
+	let a = document.querySelector('#audio');
+	a.controls = true; 
 }
