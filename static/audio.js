@@ -1,6 +1,6 @@
 class AudioSource{
 	constructor(){
-		this.audioElement = creatAudioElement();
+		this.audioElement = creatAudioElement("advAudio");
 		
 		// create audio context (for legacy browsers)
 		let AudioContext = window.AudioContext || window.webkitAudioContext;

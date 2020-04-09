@@ -181,10 +181,10 @@ function windowResized(){
 	//resizeCanvas(windowWidth, windowHeight);
 }
 
-function creatAudioElement(){
+function creatAudioElement(id){
     // create audio element
     let ae = document.createElement("AUDIO");
-    ae.id = "advAudio";
+    ae.id = id;
     ae.controls = false;
     ae.setAttribute("crossorigin","anonymous");
     if (ae.canPlayType("audio/ogg")) {
@@ -293,11 +293,6 @@ function createVolSlider(){
 	return v 
 }
 
-function createSimpleControl(){
-	let a = document.querySelector('#audio');
-	a.controls = true; 
-}
-
 function setup() {
     // error msg display
     let msgElement = creatErrMsgDom();
@@ -313,7 +308,7 @@ function setup() {
         // browser does not support player
         audio_status = 0;
         audio = null;
-        msgElement.innerHTML = "Your browser does't support advanced audio features."
+        msgElement.innerHTML = "Your browser does't support advanced audio."
         // msgElement.innerHTML = err.message;
         msgElement.style.visibility = "visible"; 
     }
@@ -324,7 +319,7 @@ function setup() {
         createVolSlider();
         createPlayerControl();
     }else{
-        let audioElement = creatAudioElement();
+        let audioElement = creatAudioElement("simpleAudio");
         audioElement.controls = true;
         ctlElement.style.backgroundColor = "rgba(0,0,0,0)";
     }

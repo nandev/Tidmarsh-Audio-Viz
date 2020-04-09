@@ -6,11 +6,11 @@ body{
 #err_msg {
 	background-color: rgba(50, 50, 50, 0.8);
 	color: #d3d3d3;
-	font-size: 12px;
+	font-size: 10px;
 	font-family: Arial, Helvetica, sans-serif;
 	text-align: center;
 	position: relative;
-	max-width: 300px;
+	max-width: 200px;
 	padding: 5px 5px;
 	margin: 5px auto;
 }
@@ -34,11 +34,9 @@ body{
 	width: 100px;
 }
 #control audio{
-	position: absolute;
-	width: 190px;
+	width: 200px;
 	height: 25px;
-	top: 5px;
-	left: 5px;
+	margin: 0px auto;
 	opacity: 0.7;
 }
 
