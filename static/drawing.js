@@ -326,13 +326,13 @@ function setup() {
     
 	// setup canvas
   	let cnv = createCanvas(windowWidth, windowHeight);
-	cnv.position(0, 0);
+	//cnv.position(0, 0);
 	cnv.style('z-index', -1);
 	// setup framerate
   	frameRate(8);
 	
 	// generate population size
-	tree_par.n_h = floor((width-10)/tree_par.w);
+	tree_par.n_h = floor((width-40)/tree_par.w);
 	tree_par.n_v = floor((height-10)/tree_par.h);
 	tree_par.n  = tree_par.n_h*tree_par.n_v;
 	bird_par.n  = floor(tree_par.n*0.2);

@@ -20,7 +20,7 @@ body{
 	position: relative;
 	width: 200px;
 	height: 35px;
-	margin: 5px auto;
+	margin: 5px auto 20px auto;
 }
 #control p{
 	color: #d3d3d3;
