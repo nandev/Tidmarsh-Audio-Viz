@@ -308,7 +308,7 @@ function setup() {
         // browser does not support player
         audio_status = 0;
         audio = null;
-        msgElement.innerHTML = "Your browser does't support advanced audio."
+        msgElement.innerHTML = "Your browser does't support advanced audio processing."
         // msgElement.innerHTML = err.message;
         msgElement.style.visibility = "visible"; 
     }
@@ -325,7 +325,7 @@ function setup() {
     }
     
 	// setup canvas
-  	let cnv = createCanvas(windowWidth, windowHeight);
+  	let cnv = createCanvas(windowWidth, windowHeight-100);
 	//cnv.position(0, 0);
 	cnv.style('z-index', -1);
 	// setup framerate
@@ -335,7 +335,7 @@ function setup() {
 	tree_par.n_h = floor((width-40)/tree_par.w);
 	tree_par.n_v = floor((height-10)/tree_par.h);
 	tree_par.n  = tree_par.n_h*tree_par.n_v;
-	bird_par.n  = floor(tree_par.n*0.2);
+	bird_par.n  = floor(tree_par.n*0.1);
 	bug_par.n = bird_par.n;
 	bug_par.d = tree_par.h*0.25;
 	// generate trees
@@ -374,7 +374,7 @@ function draw() {
         	p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //high
         	p_bug = Math.pow((dataArray[6])/70,4)*0.01; //low
         }
-    	p_tree = Math.pow((dataArray[0] + dataArray[0])/100,2)*0.01;
+    	p_tree = Math.pow((dataArray[0] + dataArray[1])/100,2)*0.01;
     } 
 	
 	// draw background
