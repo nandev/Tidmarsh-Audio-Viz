@@ -4,5 +4,5 @@ Listen to the sound of nature live from the Mass Audubon Tidmarsh Wildlife Sanct
 
 **[Demo](https://www.nayo.info/tidmarsh)**
 
-As part of the Living Observatory Project, Researchers from the MIT Media Lab Responsive Environments Group installed a network of sensors at the wetlands near Plymouth Massachusetts. This website remixes the rich audio data from the sensor network to create a mindful sound experience and a forest animation that reacts to wildlife and weather activities in the wetlands.
+As part of the [Living Observatory Project](http://www.livingobservatory.org/), Researchers from the [MIT Media Lab Responsive Environments Group](http://tidmarsh.media.mit.edu/) installed a network of sensors at the wetlands near Plymouth Massachusetts. This website remixes the rich audio data from the sensor network to create a mindful sound experience and a forest animation that reacts to wildlife and weather activities in the wetlands.
 
