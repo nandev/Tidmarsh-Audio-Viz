@@ -308,7 +308,7 @@ function setup() {
         // browser does not support player
         audio_status = 0;
         audio = null;
-        msgElement.innerHTML = "Your browser does't support advanced audio processing."
+        msgElement.innerHTML = "Your browser does't support advanced audio processing. Try again using the latest desktop version of Chrome, Firefox, or Edge."
         // msgElement.innerHTML = err.message;
         msgElement.style.visibility = "visible"; 
     }
@@ -319,8 +319,8 @@ function setup() {
         createVolSlider();
         createPlayerControl();
     }else{
-        let audioElement = creatAudioElement("simpleAudio");
-        audioElement.controls = true;
+        //let audioElement = creatAudioElement("simpleAudio");
+        //audioElement.controls = true;
         ctlElement.style.backgroundColor = "rgba(0,0,0,0)";
     }
     
@@ -362,7 +362,7 @@ function draw() {
     // get sound analysis
     if(audio_status>0) {
         let dataArray = audio.analyse();
-    	// console.log(dataArray)
+    	//console.log(dataArray)
     	// update probabilities
         let td = new Date();
         let t = td.getHours();
@@ -371,12 +371,15 @@ function draw() {
         	p_bug = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //high
         	p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //low
         }else{
-        	p_bird = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //high
+        	p_bird = Math.pow(Math.max(dataArray[3] + dataArray[6] - dataArray[0], 0)/50,2)*0.001; //high
         	p_bug = Math.pow((dataArray[6])/70,4)*0.01; //low
+            p_bug = value_limit(p_bug,0,0.01);
         }
     	p_tree = Math.pow((dataArray[0] + dataArray[1])/100,2)*0.01;
     } 
 	
+    //console.log(p_bug, p_bird, p_tree)
+    
 	// draw background
 	background(0);
 	// draw trees
