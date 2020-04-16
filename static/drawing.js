@@ -104,7 +104,7 @@ class Bird{
 			this.fly_step=1;
 			// find random next tree
 			let next_id = this.tree.id;
-			while(next_id == this.tree.id){
+			while(next_id == this.tree.id || next_id < 0 || next_id >=tree_par.n){
 				let j = floor(this.tree.j+random(-2,2));
 				j = this.flylimit(j,tree_par.n_v);
 				let i = floor(this.tree.i+random(-2,2));
@@ -362,20 +362,30 @@ function draw() {
     // get sound analysis
     if(audio_status>0) {
         let dataArray = audio.analyse();
-    	//console.log(dataArray)
+        let strArray = [];
+        for (let i=0; i<32;i++){
+            let x = dataArray[i]/100;
+            strArray.push(Number.parseFloat(x).toFixed(4))
+        }
+    	console.log(strArray)
     	// update probabilities
         let td = new Date();
-        let t = td.getHours();
+        let t = td.getHours;
+        let ws = (dataArray[0] + 0.5*(dataArray[1] + dataArray[2]))*0.01;
+        let bs = (dataArray[1])*0.01 + (dataArray[4] + dataArray[5] + dataArray[6] + dataArray[7])*0.006;
+        let bus = (dataArray[2] + dataArray[3])*0.01;
+        p_tree = Math.pow(ws,2)*0.01;
+        
         // night
         if (t>19 && t<5){
-        	p_bug = Math.pow((dataArray[3] + dataArray[6])/50,2)*0.001; //high
-        	p_bird = Math.pow((dataArray[3] + dataArray[6])/150,6)*0.0001; //low
+        	p_bug = Math.pow(Math.max(bus-0.5*ws,0),2)*0.001; //high
+        	p_bird = Math.pow(Math.max(bs-0.5*ws,0),6)*0.0001; //low
         }else{
-        	p_bird = Math.pow(Math.max(dataArray[3] + dataArray[6] - dataArray[0], 0)/50,2)*0.001; //high
-        	p_bug = Math.pow((dataArray[6])/70,4)*0.01; //low
+        	p_bird = Math.pow(Math.max(bs-0.5*ws,0),2)*0.001; 
+        	p_bug = Math.pow(Math.max(bus-0.5*ws,0),4)*0.01; 
             p_bug = value_limit(p_bug,0,0.01);
         }
-    	p_tree = Math.pow((dataArray[0] + dataArray[1])/100,2)*0.01;
+    	
     } 
 	
     //console.log(p_bug, p_bird, p_tree)

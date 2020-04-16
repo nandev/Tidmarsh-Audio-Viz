@@ -35,7 +35,7 @@ class AudioSource{
 	advanced(){
 		// analyzer
 		this.analyser = this.audioContext.createAnalyser();
-		this.analyser.fftSize = 32;
+		this.analyser.fftSize = 64;
 		this.analyserBufferLength = this.analyser.frequencyBinCount;
 		this.dataArray = new Uint8Array(this.analyserBufferLength);
 		
