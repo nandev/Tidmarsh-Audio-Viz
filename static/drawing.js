@@ -363,11 +363,13 @@ function draw() {
     if(audio_status>0) {
         let dataArray = audio.analyse();
         let strArray = [];
+        /*
         for (let i=0; i<32;i++){
             let x = dataArray[i]/100;
             strArray.push(Number.parseFloat(x).toFixed(4))
         }
     	console.log(strArray)
+        */
     	// update probabilities
         let td = new Date();
         let t = td.getHours;
