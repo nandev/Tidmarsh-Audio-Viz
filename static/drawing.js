@@ -294,10 +294,6 @@ function createVolSlider(){
 }
 
 function setup() {
-    // error msg display
-    let msgElement = creatErrMsgDom();
-    let ctlElement = createControlPanel();
-	
 	// setup audio stream  
 	try{
         audio_status = 1; // status: advanced audio
@@ -307,22 +303,12 @@ function setup() {
     catch(err) {
         // browser does not support player
         audio_status = 0;
+        audio.cleanup();
         audio = null;
-        msgElement.innerHTML = "Your browser does't support advanced audio processing. Try again using the latest desktop version of Chrome, Firefox, or Edge."
-        // msgElement.innerHTML = err.message;
-        msgElement.style.visibility = "visible"; 
+        console.log("Your browser does't support advanced audio processing. \
+        Try again using the latest desktop version of Chrome, Firefox, or Edge."
     }
     
-    //UI
-    if(audio_status==1){
-        creatTitleDom("Live Audio Tidmarsh Wildlife");
-        createVolSlider();
-        createPlayerControl();
-    }else{
-        //let audioElement = creatAudioElement("simpleAudio");
-        //audioElement.controls = true;
-        ctlElement.style.backgroundColor = "rgba(0,0,0,0)";
-    }
     
 	// setup canvas
   	let cnv = createCanvas(windowWidth, windowHeight-100);
@@ -387,7 +373,6 @@ function draw() {
         	p_bug = Math.pow(Math.max(bus-0.5*ws,0),4)*0.01; 
             p_bug = value_limit(p_bug,0,0.01);
         }
-    	
     } 
 	
     //console.log(p_bug, p_bird, p_tree)
