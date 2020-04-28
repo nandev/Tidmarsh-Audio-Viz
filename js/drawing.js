@@ -1,5 +1,5 @@
 // global var trees
-const trees = []; 
+const trees = [];
 const tree_par = {ud_speed: 1, ud_om: 1, lr_speed: 5, h: 60, w: 20, n: 0, n_h: 0, n_v: 0};
 // global var for birds
 const birds = [];
@@ -29,9 +29,9 @@ class Tree{
 		this.lr_flip = 1;
 		this.data = data;
 	}
-	
+
 	draw(wave, p){
-		if(this.lr_step!=0){			
+		if(this.lr_step!=0){
 			this.lr_step = this.lr_step+this.par.lr_speed;
 			if(this.lr_step>=this.data.steps) this.lr_step=0;
 		}
@@ -40,7 +40,7 @@ class Tree{
 			this.lr_flip = -this.lr_flip;
 		}
 		let curve = this.data.bazier20[this.lr_step];
-		stroke(color('#2ecf00')); noFill(); 
+		stroke(color('#2ecf00')); noFill();
 		for (let i = 1; i<this.layers; i++){
 			let dy = this.h-i*3
 			let y_o_i = this.y_top + i*3 + this.h*wave*0.1;
@@ -52,7 +52,7 @@ class Tree{
 			line(x_c, y_i_i, x_r, y_o_i);
 		}
 		stroke(color('#bda2a2'));
-		bezier(this.x, this.y, this.x, this.y, this.x, this.y_top, 
+		bezier(this.x, this.y, this.x, this.y, this.x, this.y_top,
 			floor(this.x+this.lr_flip*curve[0]*this.w), this.y_top);
 	}
 }
@@ -69,11 +69,11 @@ class Bird{
 		this.side = 1;
 		this.fly_step = 0;
 		this.x = this.tree.x+this.tree.w*0.5;
-		this.y = this.tree.y_top+this.branch*3; 
+		this.y = this.tree.y_top+this.branch*3;
 	}
 	draw(){
 		let x = this.x;
-		let y = this.y; 
+		let y = this.y;
 		let h = this.par.h;
 		let c = color(this.par.color)
 		stroke(c); fill(c);
@@ -82,8 +82,8 @@ class Bird{
 	fly(p){
 		let c = color(this.par.color)
 		stroke(c); fill(c);
-		if(this.fly_step!=0){	
-			let h = this.par.h;	
+		if(this.fly_step!=0){
+			let h = this.par.h;
 			let curve = this.data.sinsq[this.fly_step]*h*10;
 			let x = this.dx*this.fly_step+this.x+curve;
 			let y = this.dy*this.fly_step+this.y+curve;
@@ -92,7 +92,7 @@ class Bird{
 			}else{
 				triangle(x, y-h, x+h, y, x-h, y);
 			}
-			// next step	
+			// next step
 			this.fly_step = this.fly_step+this.par.speed;
 			if(this.fly_step>=this.data.steps) {
 				this.x = this.next_x; this.y = this.next_y;
@@ -110,7 +110,7 @@ class Bird{
 				let i = floor(this.tree.i+random(-2,2));
 				i = this.flylimit(i,tree_par.n_h);
 				next_id = j*tree_par.n_h+i;
-			}	
+			}
 			this.next_tree = trees[next_id];
 			this.next_x = this.next_tree.x+this.next_tree.w*0.5;
 			this.next_y = this.next_tree.y_top+this.branch*3;
@@ -119,7 +119,7 @@ class Bird{
 		}else{
 			let curve = this.data.bazier20[this.tree.lr_step];
 			let x = this.x + this.tree.lr_flip*curve[this.branch]*this.tree.w;
-			let y = this.y; 
+			let y = this.y;
 			let h = this.par.h;
 			triangle(x, y-h, x+h*0.5, y, x-h*0.5, y);
 		}
@@ -141,14 +141,14 @@ class Bug{
 		this.fly_step = 0;
 		this.x = this.tree.x+this.tree.w*0.5;
 		this.y = this.tree.y_top+this.par.branch*3;
-		this.om = 6.28/this.data.steps; 
+		this.om = 6.28/this.data.steps;
 		this.d = 0;
 	}
 	fly(p){
 		let c = color(this.par.color)
 		stroke(c); fill(c);
 		if(this.fly_step!=0){
-			// flying path		
+			// flying path
 			let curve = this.side*this.data.sinsq[this.fly_step]*2;
 			let y = floor(this.y+curve*random(this.d-2,this.d));
 			let x = floor(this.x-Math.sin(this.fly_step*this.om)*this.d);
@@ -162,7 +162,7 @@ class Bug{
 			// draw a halo
 			let c = color(255,255,255,random(0,70))
 			stroke(c); fill(c);
-			circle(x, y, h*5);	
+			circle(x, y, h*5);
 			// next step
 			this.fly_step = this.fly_step+this.par.speed;
 			if(this.fly_step>=this.data.steps) this.fly_step=0;
@@ -193,8 +193,8 @@ function creatAudioElement(id){
         ae.setAttribute("src","https://doppler.media.mit.edu/impoundment.mp3");
     }
 	panel = document.querySelector('#control');
-	panel.appendChild(ae); 
-    
+	panel.appendChild(ae);
+
     // behavior
 	ae.addEventListener('ended', () => {
         if(audio_status == 1){
@@ -204,22 +204,22 @@ function creatAudioElement(id){
             audio.pause();
         }
 	}, false);
-    
+
     return ae;
 }
-	
+
 function creatErrMsgDom(){
 	let p = document.createElement("P");
 	p.id = "err_msg"
 	p.style.visibility = "hidden";
-	document.body.appendChild(p); 
+	document.body.appendChild(p);
 	return p;
 }
 
 function createControlPanel(){
 	let a = document.createElement("DIV");
 	a.id = "control";
-	document.body.appendChild(a); 
+	document.body.appendChild(a);
     return a;
 }
 
@@ -228,7 +228,7 @@ function creatTitleDom(text){
 	p.id = "title"
 	p.innerHTML = text;
 	panel = document.querySelector('#control');
-	panel.appendChild(p); 
+	panel.appendChild(p);
 	return p;
 }
 
@@ -241,15 +241,15 @@ function createPlayerControl(){
 	let pause = document.createElement("IMG");
 	pause.id = "pause_img";
 	pause.style.visibility = "hidden";
-	pause.src = "/static/pause.png";
+	pause.src = "img/pause.png";
 	let play = document.createElement("IMG");
 	play.id = "play_img";
-	play.src = "/static/play.png";
+	play.src = "img/play.png";
 	panel = document.querySelector('#control');
-	panel.appendChild(a); 
+	panel.appendChild(a);
 	a.appendChild(pause);
 	a.appendChild(play);
-	
+
 	// behavior
 	a.addEventListener('click', function() {
 		if (this.dataset.playing === 'false') {
@@ -266,7 +266,7 @@ function createPlayerControl(){
 			document.querySelector('#play_img').style.visibility = "visible";
 		}
 	}, false);
-	
+
 	return a;
 }
 
@@ -275,34 +275,34 @@ function createVolSlider(){
 	a.id = "volume_div";
 	let img = document.createElement("IMG");
 	img.id = "volume_img";
-	img.src = "/static/volume.png";
+	img.src = "img/volume.png";
 	let v = document.createElement("INPUT");
 	v.id = "volume";
 	v.type = "range";
 	v.in= 0; v.max=2; v.value=1; v.step=0.01;
 	panel = document.querySelector('#control');
 	panel.appendChild(a);
-	a.appendChild(img); 
-	a.appendChild(v); 
-	
+	a.appendChild(img);
+	a.appendChild(v);
+
 	// behavior
 	v.addEventListener('input', function() {
 		audio.gainNode.gain.value = this.value;
 	}, false);
-	
-	return v 
+
+	return v
 }
 
 function setup() {
     // error msg display
     let msgElement = creatErrMsgDom();
     let ctlElement = createControlPanel();
-	
-	// setup audio stream  
+
+	// setup audio stream
 	try{
         audio_status = 1; // status: advanced audio
 		audio = new AudioSource();
-        audio.advanced(); 
+        audio.advanced();
 	}
     catch(err) {
         // browser does not support player
@@ -310,9 +310,9 @@ function setup() {
         audio = null;
         msgElement.innerHTML = "Your browser does't support advanced audio processing. Try again using the latest desktop version of Chrome, Firefox, or Edge."
         // msgElement.innerHTML = err.message;
-        msgElement.style.visibility = "visible"; 
+        msgElement.style.visibility = "visible";
     }
-    
+
     //UI
     if(audio_status==1){
         creatTitleDom("Live Audio Tidmarsh Wildlife");
@@ -323,14 +323,14 @@ function setup() {
         //audioElement.controls = true;
         ctlElement.style.backgroundColor = "rgba(0,0,0,0)";
     }
-    
+
 	// setup canvas
   	let cnv = createCanvas(windowWidth, windowHeight-100);
 	//cnv.position(0, 0);
 	cnv.style('z-index', -1);
 	// setup framerate
   	frameRate(8);
-	
+
 	// generate population size
 	tree_par.n_h = floor((width-40)/tree_par.w);
 	tree_par.n_v = floor((height-10)/tree_par.h);
@@ -354,11 +354,11 @@ function setup() {
 	}
 }
 
-function draw() {	
+function draw() {
     let p_bug = 0.01;
     let p_bird = 0.01;
     let p_tree = 0.01;
-    
+
     // get sound analysis
     if(audio_status>0) {
         let dataArray = audio.analyse();
@@ -377,21 +377,21 @@ function draw() {
         let bs = (dataArray[1])*0.01 + (dataArray[4] + dataArray[5] + dataArray[6] + dataArray[7])*0.006;
         let bus = (dataArray[2] + dataArray[3])*0.01;
         p_tree = Math.pow(ws,2)*0.01;
-        
+
         // night
         if (t>19 && t<5){
         	p_bug = Math.pow(Math.max(bus-0.5*ws,0),2)*0.001; //high
         	p_bird = Math.pow(Math.max(bs-0.5*ws,0),6)*0.0001; //low
         }else{
-        	p_bird = Math.pow(Math.max(bs-0.5*ws,0),2)*0.001; 
-        	p_bug = Math.pow(Math.max(bus-0.5*ws,0),4)*0.01; 
+        	p_bird = Math.pow(Math.max(bs-0.5*ws,0),2)*0.001;
+        	p_bug = Math.pow(Math.max(bus-0.5*ws,0),4)*0.01;
             p_bug = value_limit(p_bug,0,0.01);
         }
-    	
-    } 
-	
+
+    }
+
     //console.log(p_bug, p_bird, p_tree)
-    
+
 	// draw background
 	background(0);
 	// draw trees
@@ -419,5 +419,3 @@ function coin_flip(p){
 function value_limit(val, min, max) {
   return val < min ? min : (val > max ? max : val);
 }
-
-
