@@ -35,7 +35,6 @@ function creatEnterElement(id){
 }
 
 function sketch(p5) {
-    
     p5.setup = function() {
         // create Cavas
         let cnv = p5.createCanvas(p5.windowWidth, p5.windowHeight);
@@ -44,20 +43,15 @@ function sketch(p5) {
         // create Animation
         animation = new NanForest(p5.width, p5.height, audio, p5)
     };
-
-    p5.draw = function() {        
+    p5.draw = function() {      
+        // draw Animation  
         if(this.animation!=undefined) {
             animation.draw()
         }
     };
-};
-
-function init(){
-    creatEnterElement("enterDiv");
 }
 
 function setup_audio_canvas(){
-
 	// setup audio stream
     try{
         audioElement = creatAudioElement("advAudio");
@@ -75,7 +69,10 @@ function setup_audio_canvas(){
         console.log("Your browser does't support advanced audio processing. \
         Try again using the latest desktop version of Chrome, Firefox, or Edge.")
     }
-    
     // invoke p5
     new p5(sketch); 
+}
+
+function init(){
+    creatEnterElement("enterDiv");
 }
