@@ -36,7 +36,7 @@ function sketch(p5) {
 };
 
 function init(){
-
+    /*
 	// setup audio stream
     try{
         audioElement = creatAudioElement("advAudio");
@@ -52,6 +52,6 @@ function init(){
         console.log("Your browser does't support advanced audio processing. \
         Try again using the latest desktop version of Chrome, Firefox, or Edge.")
     }
-
+    */
     new p5(sketch); // invoke p5
 }

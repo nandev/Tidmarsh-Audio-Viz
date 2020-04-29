@@ -129,7 +129,7 @@ class Bug{
 		this.par = par;
 		this.data = data;
         this.p5 = p5;
-		this.tree = trees[Math.floor(Math.random(0,tree_par.n-1))];
+		this.tree = trees[Math.floor(this.p5.random(0,tree_par.n-1))];
 		this.side = 1;
 		this.fly_step = 0;
 		this.x = this.tree.x+this.tree.w*0.5;
