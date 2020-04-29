@@ -271,9 +271,6 @@ class NanForest{
     		this.bugs[i].fly(p_bug);
     	}
     }
-    
-    
-    
 }
 
 // unitility

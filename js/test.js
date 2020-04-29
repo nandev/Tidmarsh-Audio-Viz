@@ -17,6 +17,23 @@ function creatAudioElement(id){
     return ae;
 }
 
+function creatEnterElement(id){
+    // create audio element
+    let div = document.createElement("DIV");
+    var para = document.createElement("p");
+    let text = document.createTextNode("Click to Enter"); 
+    div.id = id;
+    para.appendChild(text);
+    div.appendChild(para);
+	document.body.appendChild(div);
+    // behavior
+    div.onclick = function(){ 
+        setup_audio_canvas(); 
+        this.style.display = "none"
+    };
+    return div;
+}
+
 function sketch(p5) {
     
     p5.setup = function() {
@@ -36,22 +53,29 @@ function sketch(p5) {
 };
 
 function init(){
-    /*
+    creatEnterElement("enterDiv");
+}
+
+function setup_audio_canvas(){
+
 	// setup audio stream
     try{
         audioElement = creatAudioElement("advAudio");
         audio_status = 1; // status: advanced audio
 		audio = new AudioSource(audioElement);
         audio.advanced();
+        audio.play();
 	}
     catch(err) {
         // browser does not support player
         audio_status = 0;
         if(audio!=undefined) audio.cleanup().then(audio = undefined)
+        this.audioElement.play();
         console.log(err)
         console.log("Your browser does't support advanced audio processing. \
         Try again using the latest desktop version of Chrome, Firefox, or Edge.")
     }
-    */
-    new p5(sketch); // invoke p5
+    
+    // invoke p5
+    new p5(sketch); 
 }
