@@ -1,21 +1,99 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<!-- Global site tag (gtag.js) - Google Analytics -->
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-61713612-3"></script>
-	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
-
-	  gtag('config', 'UA-61713612-3');
-	</script>
+	<link rel="stylesheet" href="css/foundation.css">
+	<link rel="stylesheet" href="css/app.css">
+	<!-- <link rel="stylesheet" href="css/style.css"> -->
+	<script src="js/vendor/p5.min.js"></script>
+	<script src="js/vendor/jquery.js"></script>
 	<script src="js/audio.js"></script>
-	<script src="js/p5.min.js"></script>
-	<script src="js/test.js"></script>
+	<script src="js/app.js"></script>
 	<script src="js/drawing.js"></script>
-	<link rel="shortcut icon" href="img/favicon.ico">
-	<link rel="stylesheet" href="css/style.css">
+	<script src="js/preloader.js"></script>
 </head>
-<body onload="init()"></body>
+<body>
+	<div class="loader-body" id="loader">
+		<div class="loader"></div>
+	</div>
+	<div class="reveal medium" id="infoContainer" data-reveal>
+		<div id="closeBack"></div>
+		<button id="closeButton" data-close></button>
+		<div class="grid-container full">
+			<div class="grid-x">
+				<!-- <div class="cell large-12 slideshowContainer">
+					<div class="orbit" role="region" aria-label="Tidmarsh Pictures" data-orbit>
+						<div class="orbit-wrapper">
+							<ul class="orbit-container">
+								<li class="is-active orbit-slide">
+									<figure class="orbit-figure">
+										<img class="orbit-image" src="img/image1.jpg" alt="Wildlife at Tidmarsh 1">
+									</figure>
+								</li>
+								<li class="orbit-slide">
+									<figure class="orbit-figure">
+										<img class="orbit-image" src="img/image2.jpg" alt="Wildlife at Tidmarsh 2">
+									</figure>
+								</li>
+								<li class="orbit-slide">
+									<figure class="orbit-figure">
+										<img class="orbit-image" src="img/image3.jpg" alt="Wildlife at Tidmarsh 3">
+									</figure>
+								</li>
+								<li class="orbit-slide">
+									<figure class="orbit-figure">
+										<img class="orbit-image" src="img/image4.jpg" alt="Wildlife at Tidmarsh 4">
+									</figure>
+								</li>
+							</ul>
+						</div>
+						<nav class="orbit-bullets">
+							<button class="is-active" data-slide="0">
+								<span class="show-for-sr">Wildlife at Tidmarsh 1</span>
+								<span class="show-for-sr" data-slide-active-label>Current Slide</span>
+							</button>
+							<button data-slide="1"><span class="show-for-sr">Wildlife at Tidmarsh 2</span></button>
+							<button data-slide="2"><span class="show-for-sr">Wildlife at Tidmarsh 3</span></button>
+							<button data-slide="3"><span class="show-for-sr">Wildlife at Tidmarsh 4</span></button>
+						</nav>
+					</div>
+				</div> -->
+				<div class="cell large-12 textContainer">
+					<h5>The 24/7 live sounds on this site are a mix of dozens of handmade microphones that have been recording for years in the woods and swamps of a recovering wetland in Plymouth, Massachusetts, called Tidmarsh. In this time of self-isolation and shelter-in-place, those of us in cities find ourselves cut off from nature when we need it most. With Living Sounds, we invite you to join us in a real live restoration symphony.<h5>
+					<p class="infoText">Formerly a large industrial cranberry farm, Tidmarsh was once managed for productivity. Today, the Tidmarsh Wildlife Sanctuary is a restoration wetland in the continual process of transformation. Restoration is a change of conditions, new and renewed connections, migration, the flow of clean water.</p>
+					<p class="infoText">Over the last 8 years, a team of MIT researchers led by an innovative documentary media-maker has been recording the arc of change at Tidmarsh through dozens of microphones, cameras, and sensors in the air, water, and soil. Our aims are to advance the science of ecological restoration, and to find new ways of telling the story of environmental change and resilience.</p>
+					<p class="infoText">The visuals on this site were made by different designers inspired by the living sounds. Together, the sights and sounds are here to change the conditions of our collective isolations, listening together to the unfolding story of a fragile ecosystem taking root.</p>
+					<!-- <p>Visit us at <a href="http://livingobservatory.org" target="_blank">livingobservatory.org</a></p> -->
+					<button id="socialButton"><a href="https://www.instagram.com/livingtidmarsh/" target="_blank"><img src="img/social-instagram.svg" alt="Instagram Button"></a></button>
+					<button id="socialButton"><a href="https://www.facebook.com/LivingObservatory/" target="_blank"><img src="img/social-facebook.svg" alt="Facebook Button"></a></button>
+					<button id="socialButton"><a href="https://twitter.com/livingtidmarsh" target="_blank"><img src="img/social-twitter.svg" alt="Twitter Button"></a></button>
+					<!-- <p>Visuals designed and built by <a href="https://orcungogus.com/" target="_blank">Orcun Gogus</a><br>
+					Line animation based on a sketch by <a href="https://generated.space/" target="_blank">Kjetil Golid</a></p> -->
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="homeBody">
+		<div id="sketchContainer" class="lowOpacity"></div>
+		<!-- <div id="logoContainer">
+			<button onClick="togglePlay()"><img src="img/logo2x.png" alt="Logo" height="100%" width="100%"></button>
+		</div> -->
+		<button id="infoButton" data-open="infoContainer"></button>
+		<button id="playButton" onClick="togglePlay()"></button>
+		<button id="nextButton"><a href="#nextViz"><img src="img/next.svg" alt="Next visual design"></a></button>
+		<button id="lastButton"><a href="#lastViz"><img src="img/last.svg" alt="Previous visual design"></a></button>
+
+		<div id="credits">
+			<p>"Tidmarsh Forest Bath" by <a href="https://nayo.info/tidmarsh" target="_blank">Nan Zhao</a><br>
+			Brought to you by <a href="https://slowimmediate.com" target="_blank">slow immediate</a> + <a href="https://livingobservatory.org" target="_blank">Living Observatory</a> | <a href="https://secure.squarespace.com/checkout/donate?donatePageId=579a05bfc534a55fb9b38118" target="_blank">DONATE</a></p>
+		</div>
+		<div id="productionCredit">
+		</div>
+		<!-- <audio id="myAudio" preload="none">
+			<source src="https://doppler.media.mit.edu/impoundment.mp3" type="audio/mp3">
+			<source src="https://doppler.media.mit.edu/impoundment.ogg" type="audio/ogg">
+		</audio> -->
+	</div>
+<script src="js/vendor/what-input.js"></script>
+<script src="js/vendor/foundation.js"></script>
+</body>
 </html>
