@@ -1,4 +1,4 @@
-/* 
+/*
 
     Nan's Forest Animation
 
@@ -23,7 +23,7 @@ class Tree{
 		this.layers = Math.floor(this.p5.random(0.4, 0.8)*this.h*0.3333);
 		this.lr_step = 0;
 		this.lr_flip = 1;
-		
+
 	}
 
 	draw(wave, p){
@@ -69,7 +69,7 @@ class Bird{
 		this.fly_step = 0;
 		this.x = this.tree.x+this.tree.w*0.5;
 		this.y = this.tree.y_top+this.branch*3;
-        
+
 	}
 	fly(p){
 		let c = this.p5.color(this.par.color)
@@ -174,7 +174,7 @@ class NanForest{
     constructor(width, height, audio, p5){
         this.width = width;
         this.height = height;
-        this.p5 = p5; 
+        this.p5 = p5;
         this.audio = audio; // audio context, audio=undefined if no audio context
         this.showing = false; // is amination tab showing
         // var trees
@@ -192,7 +192,7 @@ class NanForest{
         this.showing = true;
     	// setup framerate
       	this.p5.frameRate(8);
-        
+
     	// generate population size
     	this.tree_par.n_h = Math.floor((this.width-40)/this.tree_par.w);
     	this.tree_par.n_v = Math.floor((this.height-10)/this.tree_par.h);
@@ -216,10 +216,10 @@ class NanForest{
     	}
     }
     draw(){
-        // run setup function when first time drawing 
+        // run setup function when first time drawing
         if(!this.showing) this.setup()
-         
-        // default values for movement probabilities   
+
+        // default values for movement probabilities
         let p_bug = 0.01;
         let p_bird = 0.01;
         let p_tree = 0.01;
@@ -278,10 +278,9 @@ const NanForestUtils = {
     value_limit: function(val, min, max) {
         return val < min ? min : (val > max ? max : val);
     },
-    
+
     coin_flip: function(p){
     	let chance = Math.random(0,1);
     	return chance<p;
     }
 }
-
