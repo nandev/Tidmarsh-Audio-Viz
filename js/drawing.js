@@ -13,10 +13,11 @@ class Tree{
 		this.j = j; //rows
 		this.data = data;
         this.p5 = p5;
+        this.h_grid
 		let h = this.par.h; let w = this.par.w;
-		let h2 = h*0.5; let w2 = w*0.3;
-		this.x = w*(0.5+i)+Math.floor(this.p5.random(-h2,h2))+5;
-		this.y = h*(1+j)+Math.floor(this.p5.random(-w2,w2))+5;
+		let h2 = this.par.h_grid*this.par.h_random_pos; let w2 = this.par.w_grid*this.par.w_random_pos;
+		this.x = this.par.w_grid*(1.5+i+this.par.w_random_pos)+Math.floor(this.p5.random(-w2,w2));
+		this.y = this.par.h_grid*(2+j+this.par.h_random_pos)+Math.floor(this.p5.random(-h2,h2));
 		this.h = Math.floor(h*(1 - this.p5.random(0, 0.5)));
 		this.w = Math.floor(w*(0.5 - this.p5.random(0, 0.4)));
 		this.y_top = this.y - this.h;
@@ -179,7 +180,7 @@ class NanForest{
         this.showing = false; // is amination tab showing
         // var trees
         this.trees = [];
-        this.tree_par = {ud_speed: 1, ud_om: 1, lr_speed: 5, h: 60, w: 20, n: 0, n_h: 0, n_v: 0};
+        this.tree_par = {ud_speed: 1, ud_om: 1, lr_speed: 5, h: 60, w: 20, n: 0, n_h: 0, n_v: 0, h_grid: 60, w_grid: 40, h_random_pos: 0.5, w_random_pos: 1};
         // var for birds
         this.birds = [];
         this.bird_par = {speed: 1, h: 3, n: 0, color: '#cf2900'};
@@ -194,8 +195,9 @@ class NanForest{
       	this.p5.frameRate(8);
         
     	// generate population size
-    	this.tree_par.n_h = Math.floor((this.width-40)/this.tree_par.w);
-    	this.tree_par.n_v = Math.floor((this.height-10)/this.tree_par.h);
+        
+    	this.tree_par.n_h = Math.floor((this.width-(2*this.tree_par.w_random_pos+2)*this.tree_par.w_grid)/this.tree_par.w_grid);
+    	this.tree_par.n_v = Math.floor((this.height-(2*this.tree_par.h_random_pos+2)*this.tree_par.h_grid)/this.tree_par.h_grid);
     	this.tree_par.n  = this.tree_par.n_h*this.tree_par.n_v;
     	this.bird_par.n  = Math.floor(this.tree_par.n*0.1);
     	this.bug_par.n = this.bird_par.n;
@@ -256,7 +258,7 @@ class NanForest{
         //console.log(p_bug, p_bird, p_tree)
 
     	// draw background
-    	this.p5.background(0);
+    	this.p5.clear();
     	// draw trees
     	let ud_step = this.p5.frameCount%(this.data.steps*this.tree_par.ud_om)*this.tree_par.ud_speed;
     	for(let id = 0; id<this.tree_par.n; id++){
