@@ -195,7 +195,7 @@ class NanForest{
       	this.p5.frameRate(8);
 
     	// generate population size
-        
+
     	this.tree_par.n_h = Math.floor((this.width-(2*this.tree_par.w_random_pos+2)*this.tree_par.w_grid)/this.tree_par.w_grid);
     	this.tree_par.n_v = Math.floor((this.height-(2*this.tree_par.h_random_pos+2)*this.tree_par.h_grid)/this.tree_par.h_grid);
     	this.tree_par.n  = this.tree_par.n_h*this.tree_par.n_v;
@@ -229,6 +229,7 @@ class NanForest{
         // get sound analysis
         if(this.audio!=undefined) {
             let dataArray = this.audio.analyse();
+						// console.log(dataArray);
             let strArray = [];
             /*
             for (let i=0; i<32;i++){

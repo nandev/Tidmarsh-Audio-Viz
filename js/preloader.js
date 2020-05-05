@@ -8,4 +8,3 @@ $(document).ready(function() {
   }, 1000);
   initApp();
 });
-$(document).foundation();

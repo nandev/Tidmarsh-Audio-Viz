@@ -1,17 +1,13 @@
 class AudioSource{
 	constructor(audioElement){
 		this.audioElement = audioElement;
-
 		// create audio context (for legacy browsers)
 		let AudioContext = window.AudioContext || window.webkitAudioContext;
 		this.audioContext = new AudioContext();
-
 		// pass it into the audio context
 		this.track = this.audioContext.createMediaElementSource(this.audioElement);
-
 		// create output destination
 		this.dest = this.audioContext.destination;
-
 		// set analyser to null
 		this.analyser = null;
 	}
@@ -22,7 +18,7 @@ class AudioSource{
 		this.analyser.fftSize = 64;
 		this.analyserBufferLength = this.analyser.frequencyBinCount;
 		this.dataArray = new Uint8Array(this.analyserBufferLength);
-        this.track.connect(this.analyser).connect(this.dest);
+    this.track.connect(this.analyser).connect(this.dest);
 	}
 
 	play(){

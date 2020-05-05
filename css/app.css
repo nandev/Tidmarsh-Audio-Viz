@@ -3,13 +3,15 @@
 .homeBody {
 	width: 100vw;
 	height: 100vh;
-	/* background-color: #141414;
-	background-image: url("../img/background2x.jpg");
 	background-repeat: no-repeat;
-  	background-attachment: fixed;
-  	background-position: center;
-  	background-size: cover; */
+	background-attachment: fixed;
+	background-position: center;
+	background-size: cover;
+}
+
+#homeBodyApp{
 	background-color: #000000;
+	background-image: url("../img/TidmarshForestBath/bg.jpg");
 }
 
 .lowOpacity{
@@ -42,6 +44,11 @@
 }
 
 #infoContainer{
+	background-color: #141414;
+	padding:0;
+}
+
+#onboardingContainer{
 	background-color: #141414;
 	padding:0;
 }
@@ -96,6 +103,17 @@
  }
 
  #closeButton{
+ 	cursor: pointer;
+ 	position: fixed;
+ 	background-image: url("../img/close.svg");
+ 	background-size: cover;
+ 	width:2rem;
+ 	height:2rem;
+ 	top:2rem;
+ 	right:2rem;
+ }
+
+ #closeButton_onboarding{
  	cursor: pointer;
  	position: fixed;
  	background-image: url("../img/close.svg");
