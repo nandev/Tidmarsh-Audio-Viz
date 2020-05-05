@@ -70,29 +70,39 @@ function lastSketch(){
   }
 }
 
-function setup_audio_canvas(){
+function setup_audio(){
 	// setup audio stream
     try{
+        console.debug("Create audioContext for advanced audio processing.");
         audioElement = createAudioElement("advAudio");
         audio_status = 1; // status: advanced audio
         audioStream = new AudioSource(audioElement);
         audioStream.advanced();
-        // audioStream.play();
-        // if(!audioStream.paused){isPlaying = true;};
+        audioStream.play();
+        if(!this.audioElement.paused){isPlaying = true;};
 	}
     catch(err) {
+        console.debug("AudioContext is not supported for advanced audio processing. Switch to use HTML5 audio player.");
         // browser does not support player
         audio_status = 0;
-        if(audioStream!=undefined) audioStream.cleanup()
-        // this.audioElement.play();
-        // if(!this.audioElement.paused){isPlaying = true;};
-        console.log(err)
-        console.log("Your browser does't support advanced audio processing. \
-        Try again using the latest desktop version of Chrome, Firefox, or Edge.")
+        if(audioStream!=undefined){
+            audioStream.cleanup();
+            audioStream= undefined;
+        }
+        this.audioElement.play();
+        isPlaying = true;
+        console.debug("Error during setup of audioContext:", err)
+        console.log("Your browser does't support advanced audio processing. Try again using the latest desktop version of Chrome, Firefox, or Edge.")
     }
+    // display volume control
+    document.getElementById('playButton').style.backgroundImage = "url('img/volume_up.svg')";
+}
+
+function setup_canvas(){
+    // identify sketch container 
     document.getElementById("sketchContainer").className = document.getElementById("sketchContainer").className.replace( /(?:^|\s)lowOpacity(?!\S)/g , '' );
-    document.getElementById('playButton').style.backgroundImage = "url('img/volume_off.svg')";
     // invoke p5
+    console.debug("Invoke P5.");
     currentSketch = 0;
     p5_main = new p5(sketches[currentSketch]);
 }
@@ -119,7 +129,8 @@ function initApp(){
   // createEnterElement("enterDiv");
   // loadScript("js/sketches/LivingRings.js");
   // loadScript("js/sketches/drawing.js");
-  setup_audio_canvas();
+  console.debug("Setup animation canvas.");
+  setup_canvas();
   if(currentSketch==0){
     document.getElementById('lastButton').style.display = "none";
   }

@@ -41,11 +41,10 @@ class AudioSource{
 	analyse(){
 		// frequency analysis
 		if(this.analyser!=null){
-            console.log("Analysing Audio")
 			this.analyser.getByteFrequencyData(this.dataArray);
 			return this.dataArray;
 		}
-		return null;
+		return undefined;
 	}
 
     cleanup(){

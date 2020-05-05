@@ -227,8 +227,9 @@ class NanForest{
         let p_tree = 0.01;
 
         // get sound analysis
-        if(this.audio!=undefined || this.audio_status==0) {
+        if(this.audio!=undefined && this.audio_status!=0) {
             let dataArray = this.audio.analyse();
+            if (dataArray==undefined) break;
             let strArray = [];
             /*
             for (let i=0; i<32;i++){
