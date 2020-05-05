@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Living Sounds From Living Observatory</title>
+    <title>Living Sounds</title>
     <link rel="stylesheet" href="css/foundation.css">
     <link rel="stylesheet" href="css/app.css">
 
@@ -18,18 +18,22 @@
 
   </head>
   <body>
-    <div class="loader-body" id="loader">
+    <!-- <div class="loader-body" id="loader">
       <div class="loader"></div>
-    </div>
+    </div> -->
     <div class="reveal medium" id="onboardingContainer" data-reveal>
-      <div id="closeBack"></div>
-      <button id="closeButton_onboarding" data-close></button>
+      <div id="closeOnboarding"></div>
+      <!-- <button id="closeButton_onboarding" data-close></button> -->
       <div class="grid-container full">
         <div class="grid-x">
           <div class="cell large-12 textContainer">
-            <h4>The sound you’re about to hear is live from a restored wetland in Plymouth, Massachusetts, mixed from dozens of microphones. Stay tuned for the daily dawn chorus, afternoon lulls, thunderstorms and other chance dramas.</h4>
-            <h4>We’ll soon be bringing you accompanying live music, readings, and talks that respond to the wetland symphony. If you’re inspired by the sounds and want to contribute, please get in touch. We’re looking for new visual designs, live sonic mix-ins, and more.</h4>
-            <h4>Thanks for joining us!</h4>
+            <button id="startButton" data-close ><img src="img/start.svg" alt="start listening"></button>
+            <h5 style="padding-top:5rem;">The sound you’re about to hear is live from a restored wetland in Plymouth, MA, mixed from dozens of microphones. Stay tuned for a dawn chorus, a sleepy afternoon, a thunderstorm, a bumble bee, and other chance dramas.</h5>
+            <h5>We’ll soon be bringing you live music, readings, and talks that respond to the wetland symphony. If you’re inspired and want to contribute, <a href="https://bit.ly/livingsounds" target="_blank">get in touch</a>! We’re looking for new visuals, live sonic mix-ins, and more.</h5>
+            <p style="font-size:.8rem">PS this is a 🌟sneak peek🌟 on a work in progress, so you might find some bugs (the virtual kind!) here and there. We're aware of some issues on iOS/Safari in particular, and hope to have those fixed in the next day or so.</p>
+            <br>
+            <img src="img/SI_LO.png" alt="slow immediate and Living Observatory logos" id="SI_LO_logo" height="40%" width="40%">
+            <br>
           </div>
         </div>
       </div>

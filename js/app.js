@@ -8,7 +8,6 @@ var currentSketch = 0;
 var streamURL_ogg = "https://doppler.media.mit.edu/impoundment.ogg";
 var streamURL_mp3 = "https://doppler.media.mit.edu/impoundment.mp3";
 
-
 function createAudioElement(id){
     // create audio element
     let ae = document.createElement("AUDIO");
@@ -142,6 +141,7 @@ let TidmarshForestBath_setup = function(p) {
   p.setup = function() {
     cnv = p.createCanvas(p.windowWidth, 720);
     cnv.style('display', 'block');
+    cnv.style('z-index', -1);
     cnv.parent('sketchContainer');
     animation = new NanForest(p.width, p.height, audioStream, p)
   };
@@ -162,6 +162,7 @@ let LivingRings_setup = function(p) {
     cnv = p.createCanvas(p.windowWidth, 720);
     cnv.style('display', 'block');
     cnv.parent('sketchContainer');
+    cnv.style('z-index', -1);
     animation = new LivingRings(p.width, p.height, audioStream, p)
   };
   p.draw = function() {
@@ -171,4 +172,4 @@ let LivingRings_setup = function(p) {
   };
 }
 
-var sketches = [TidmarshForestBath_setup, LivingRings_setup];
+var sketches = [LivingRings_setup, TidmarshForestBath_setup];

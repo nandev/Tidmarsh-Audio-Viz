@@ -10,8 +10,10 @@
 }
 
 #homeBodyApp{
-	background-color: #000000;
-	background-image: url("../img/TidmarshForestBath/bg.jpg");
+	/* background-color: #000000; */
+	/* background-image: url("../img/TidmarshForestBath/bg.jpg"); */
+	background-color: #141414;
+	background-image: url("../img/background2x.jpg");
 }
 
 .lowOpacity{
@@ -100,6 +102,8 @@
 
  h5 {
 	 padding-bottom:1rem;
+	 /* padding-right: 1rem;
+	 padding-left: 1rem; */
  }
 
  #closeButton{
@@ -132,6 +136,26 @@
 	height:2rem;
 	top:2rem;
 	right:2rem;
+}
+
+#closeOnboarding{
+	position: fixed;
+	background-image: url("../img/closeBack.svg");
+	background-size: cover;
+	width:2rem;
+	height:2rem;
+	top:2rem;
+	right:2rem;
+}
+
+#startButton{
+	/* cursor: pointer; */
+	position:absolute;
+	height:4rem;
+	width:4rem;
+	top: 2rem;
+	right:2rem;
+	/* left:calc(50% - 2rem); */
 }
 
  #infoButton{
@@ -205,6 +229,13 @@
 	 color: #ccc;
 	 font-size: 0.75rem;
 	 text-align: right;
+ }
+
+ #SI_LO_logo{
+	 display: block;
+	 margin-left: auto;
+	 margin-right: auto;
+	 width: 50%;
  }
 
  button:hover, a:hover{
