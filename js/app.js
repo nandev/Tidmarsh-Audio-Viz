@@ -14,6 +14,9 @@ function createAudioElement(id){
     ae.id = id;
     ae.controls = false;
     ae.setAttribute("crossorigin","anonymous");
+    ae.addEventListener('error', function(e) {
+      console.log(e);
+    });
     if (ae.canPlayType("audio/ogg")) {
         ae.setAttribute("src", streamURL_ogg);
     } else {
@@ -80,7 +83,7 @@ function setup_audio_canvas(){
     catch(err) {
         // browser does not support player
         audio_status = 0;
-        if(audioStream!=undefined) audioStream.cleanup().then(audio = undefined)
+        if(audioStream!=undefined) audioStream.cleanup()
         // this.audioElement.play();
         // if(!this.audioElement.paused){isPlaying = true;};
         console.log(err)

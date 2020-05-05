@@ -13,12 +13,15 @@ class AudioSource{
 	}
 
 	advanced(){
+        // added this line to test whether advanced audio processing is really supported
+        // createIIRFilter should fail if not
+        const iirFilter = this.audioContext.createIIRFilter([0.1,0.1,0.1], [1,-1,0.1]);
 		// analyzer
 		this.analyser = this.audioContext.createAnalyser();
 		this.analyser.fftSize = 64;
 		this.analyserBufferLength = this.analyser.frequencyBinCount;
 		this.dataArray = new Uint8Array(this.analyserBufferLength);
-    this.track.connect(this.analyser).connect(this.dest);
+        this.track.connect(this.analyser).connect(this.dest);
 	}
 
 	play(){
@@ -38,6 +41,7 @@ class AudioSource{
 	analyse(){
 		// frequency analysis
 		if(this.analyser!=null){
+            console.log("Analysing Audio")
 			this.analyser.getByteFrequencyData(this.dataArray);
 			return this.dataArray;
 		}
