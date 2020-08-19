@@ -23,6 +23,11 @@ class AudioSource{
 		this.dataArray = new Uint8Array(this.analyserBufferLength);
         this.track.connect(this.analyser).connect(this.dest);
 	}
+    
+	simple(){
+        // simple routing
+        this.track.connect(this.dest);
+	}
 
 	play(){
 		// check if context is in suspended state (autoplay policy)
