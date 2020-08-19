@@ -241,10 +241,10 @@ function createPlayerControl(){
 	let pause = document.createElement("IMG");
 	pause.id = "pause_img";
 	pause.style.visibility = "hidden";
-	pause.src = "/static/pause.png";
+	pause.src = "/static/images/pause.png";
 	let play = document.createElement("IMG");
 	play.id = "play_img";
-	play.src = "/static/play.png";
+	play.src = "/static/images/play.png";
 	panel = document.querySelector('#control');
 	panel.appendChild(a); 
 	a.appendChild(pause);
@@ -275,7 +275,7 @@ function createVolSlider(){
 	a.id = "volume_div";
 	let img = document.createElement("IMG");
 	img.id = "volume_img";
-	img.src = "/static/volume.png";
+	img.src = "/static/images/volume.png";
 	let v = document.createElement("INPUT");
 	v.id = "volume";
 	v.type = "range";
